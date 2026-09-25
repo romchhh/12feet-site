@@ -115,6 +115,26 @@ export type Dictionary = {
     done: string;
     submitting: string;
     submitError: string;
+    conflictError: string;
+    free: string;
+    busy: string;
+    noSlots: string;
+    loadingSlots: string;
+    pickDate: string;
+    pickTime: string;
+    weekdayShort: string;
+    weekendShort: string;
+    continue: string;
+    back: string;
+    close: string;
+    stepWhen: string;
+    stepSlot: string;
+    stepContact: string;
+    successTitle: string;
+    successText: string;
+    successOk: string;
+    autoTable: string;
+    tablesFree: string;
   };
   footer: {
     logo: string;

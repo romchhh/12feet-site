@@ -1,9 +1,9 @@
 export type AdminNavIcon =
   | "dashboard"
   | "leads"
-  | "analytics"
+  | "bookings"
   | "menu"
-  | "bookings";
+  | "analytics";
 
 export type AdminNavItem = {
   href: string;
@@ -15,12 +15,12 @@ export type AdminNavItem = {
 export const ADMIN_NAV: AdminNavItem[] = [
   { href: "/admin/dashboard", label: "Дашборд", icon: "dashboard" },
   { href: "/admin/leads", label: "Заявки", icon: "leads" },
-  { href: "/admin/bookings", label: "Бронювання", icon: "bookings" },
+  { href: "/admin/bookings", label: "Бронирования", icon: "bookings" },
   { href: "/admin/menu", label: "Меню", icon: "menu" },
-  { href: "/admin/analytics", label: "Аналітика", icon: "analytics" },
+  { href: "/admin/analytics", label: "Аналитика", icon: "analytics" },
 ];
 
 export function getAdminPageTitle(pathname: string) {
-  const item = ADMIN_NAV.find((entry) => pathname.startsWith(entry.href));
-  return item?.label ?? "Адмін-панель";
+  const item = ADMIN_NAV.find((nav) => pathname.startsWith(nav.href));
+  return item?.label ?? "Админ-панель";
 }

@@ -34,6 +34,15 @@ export default function AdminShell({ children }: { children: ReactNode }) {
     };
   }, [pathname]);
 
+  useEffect(() => {
+    if (!sidebarOpen) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [sidebarOpen]);
+
   const pageTitle = getAdminPageTitle(pathname || "/admin/dashboard");
   const initials = (user?.name || user?.login || "A").slice(0, 1).toUpperCase();
 
@@ -47,7 +56,7 @@ export default function AdminShell({ children }: { children: ReactNode }) {
       <button
         type="button"
         className={`${styles.backdrop} ${sidebarOpen ? styles.backdropOpen : ""}`}
-        aria-label="Закрити меню"
+        aria-label="Закрыть меню"
         onClick={() => setSidebarOpen(false)}
       />
       <aside
@@ -58,6 +67,14 @@ export default function AdminShell({ children }: { children: ReactNode }) {
             <span className={styles.brandMark}>12 FEET</span>
             <span className={styles.brandBadge}>Admin</span>
           </Link>
+          <button
+            type="button"
+            className={styles.closeBtn}
+            aria-label="Закрыть меню"
+            onClick={() => setSidebarOpen(false)}
+          >
+            ×
+          </button>
         </div>
         <nav className={styles.nav}>
           {ADMIN_NAV.map((item) => {
@@ -83,13 +100,13 @@ export default function AdminShell({ children }: { children: ReactNode }) {
         <div className={styles.sidebarBottom}>
           <div className={styles.userCard}>
             <div className={styles.avatar}>{initials}</div>
-            <div>
-              <strong>{user?.name || "Адмін"}</strong>
+            <div className={styles.userMeta}>
+              <strong>{user?.name || "Админ"}</strong>
               <span>{user?.login}</span>
             </div>
           </div>
           <button type="button" className={styles.logout} onClick={handleLogout}>
-            Вийти
+            Выйти
           </button>
         </div>
       </aside>

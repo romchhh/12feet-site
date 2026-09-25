@@ -7,11 +7,11 @@
 }
 
 .statCard {
-  padding: 20px;
+  padding: 14px 16px;
 }
 
 .statLabel {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
   color: var(--admin-muted);
 }
@@ -19,12 +19,12 @@
 .statRow {
   display: flex;
   align-items: baseline;
-  gap: 10px;
-  margin-top: 10px;
+  gap: 8px;
+  margin-top: 8px;
 }
 
 .statValue {
-  font-size: clamp(28px, 4vw, 34px);
+  font-size: clamp(22px, 3.5vw, 28px);
   font-weight: 800;
   letter-spacing: -0.04em;
   line-height: 1;
@@ -58,22 +58,22 @@
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 16px;
-  margin-bottom: 22px;
+  gap: 12px;
+  margin-bottom: 16px;
 }
 
 .pageHeaderTitle {
-  font-size: 22px;
+  font-size: 18px;
   font-weight: 800;
   letter-spacing: -0.03em;
 }
 
 .pageHeaderLead {
-  margin-top: 6px;
+  margin-top: 4px;
   max-width: 62ch;
   color: var(--admin-muted);
-  font-size: 14px;
-  line-height: 1.55;
+  font-size: 13px;
+  line-height: 1.5;
 }
 
 .pageHeaderAction {
@@ -83,15 +83,15 @@
 }
 
 .card {
-  padding: 22px;
+  padding: 16px;
 }
 
 .cardHeader {
-  margin-bottom: 18px;
+  margin-bottom: 14px;
 }
 
 .cardTitle {
-  font-size: 17px;
+  font-size: 15px;
   font-weight: 800;
   letter-spacing: -0.02em;
 }
@@ -230,7 +230,8 @@
   z-index: 80;
   display: grid;
   place-items: center;
-  padding: 20px;
+  padding: 16px;
+  padding-bottom: max(16px, env(safe-area-inset-bottom));
 }
 
 .modalBackdrop {
@@ -245,12 +246,14 @@
   z-index: 1;
   width: min(100%, 560px);
   max-height: min(90vh, 820px);
+  max-height: min(90dvh, 820px);
   overflow: auto;
+  -webkit-overflow-scrolling: touch;
   background: #fff;
-  border-radius: 22px;
+  border-radius: 16px;
   border: 1px solid var(--admin-border);
   box-shadow: 0 24px 80px rgba(14, 14, 14, 0.2);
-  padding: 20px;
+  padding: 16px;
 }
 
 .modalWide {
@@ -376,20 +379,23 @@
 
 .tableWrap {
   overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  margin: 0 -4px;
+  padding: 0 4px;
 }
 
 .table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 720px;
+  min-width: 640px;
 }
 
 .table th,
 .table td {
-  padding: 14px 12px;
+  padding: 11px 10px;
   text-align: left;
   border-bottom: 1px solid var(--admin-border);
-  font-size: 14px;
+  font-size: 13px;
 }
 
 .table th {
@@ -520,20 +526,30 @@
 
 .filters {
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 18px;
+  flex-wrap: nowrap;
+  gap: 8px;
+  margin-bottom: 14px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 2px;
+  scrollbar-width: none;
+}
+
+.filters::-webkit-scrollbar {
+  display: none;
 }
 
 .filterChip {
-  padding: 10px 14px;
+  padding: 8px 12px;
   border-radius: 999px;
   border: 1px solid var(--admin-border);
   background: #fff;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
   color: var(--admin-muted);
   cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .filterChipActive {
@@ -545,25 +561,25 @@
 .grid2 {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px;
+  gap: 12px;
 }
 
 .grid3 {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 18px;
+  gap: 12px;
 }
 
 .grid4 {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 18px;
+  gap: 12px;
 }
 
 .stack {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 12px;
 }
 
 @media (max-width: 1100px) {
@@ -580,7 +596,66 @@
     grid-template-columns: 1fr;
   }
 
+  .grid4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .pageHeader {
     flex-direction: column;
+  }
+
+  .pageHeaderAction {
+    width: 100%;
+  }
+
+  .pageHeaderAction .primaryBtn,
+  .pageHeaderAction .ghostBtn {
+    flex: 1;
+    text-align: center;
+  }
+
+  .modalRoot {
+    padding: 0;
+    place-items: end stretch;
+  }
+
+  .modal,
+  .modalWide {
+    width: 100%;
+    max-height: min(92dvh, 920px);
+    border-radius: 16px 16px 0 0;
+    padding: 14px 14px max(16px, env(safe-area-inset-bottom));
+  }
+
+  .modalHead h3 {
+    font-size: 17px;
+  }
+
+  .ghostBtn,
+  .primaryBtn,
+  .dangerBtn {
+    padding: 10px 14px;
+  }
+
+  .field input,
+  .field select,
+  .field textarea {
+    padding: 11px 12px;
+    font-size: 16px;
+  }
+
+  .table {
+    min-width: 560px;
+  }
+
+  .iconBtn {
+    width: 34px;
+    height: 34px;
+  }
+}
+
+@media (max-width: 420px) {
+  .grid4 {
+    grid-template-columns: 1fr;
   }
 }

@@ -118,9 +118,9 @@ export default function BookingsView() {
       await load(date);
     } catch (err) {
       if (err instanceof AdminRequestError && err.status === 409) {
-        setFormError("Цей слот уже зайнятий — оберіть інший час або стіл.");
+        setFormError("Этот слот уже занят — выберите другое время или стол.");
       } else {
-        setFormError("Не вдалося створити запис.");
+        setFormError("Не удалось создать запись.");
       }
     } finally {
       setSubmitting(false);
@@ -128,7 +128,7 @@ export default function BookingsView() {
   }
 
   async function removeBooking(id: string) {
-    if (!window.confirm("Видалити запис?")) return;
+    if (!window.confirm("Удалить запись?")) return;
     await adminFetch("/api/admin/bookings", {
       method: "DELETE",
       body: JSON.stringify({ id }),
@@ -151,7 +151,7 @@ export default function BookingsView() {
               }}
             >
               <strong>{slot}</strong>
-              <span>{taken ? slotLabel(taken) : "Вільно"}</span>
+              <span>{taken ? slotLabel(taken) : "Свободно"}</span>
             </div>
           );
         })}
@@ -162,8 +162,8 @@ export default function BookingsView() {
   return (
     <>
       <AdminPageHeader
-        title="Бронювання"
-        lead="Календар столів на обраний день та ручне створення бронювань."
+        title="Бронирования"
+        lead="Календарь столов на выбранный день и ручное создание бронирований."
       />
       <AdminCard>
         <AdminField label="Дата">
@@ -179,10 +179,10 @@ export default function BookingsView() {
         <AdminLoading />
       ) : (
         <div className={styles.grid2} style={{ marginTop: 18 }}>
-          <AdminCard title="Стіл 1">
+          <AdminCard title="Стол 1">
             {renderSlotGrid(1)}
           </AdminCard>
-          <AdminCard title="Стіл 2">
+          <AdminCard title="Стол 2">
             {renderSlotGrid(2)}
           </AdminCard>
         </div>
@@ -191,17 +191,17 @@ export default function BookingsView() {
       <div className={styles.grid2} style={{ marginTop: 18 }}>
         <AdminCard title="Записи на день">
           {bookings.length === 0 ? (
-            <AdminEmpty>Немає бронювань</AdminEmpty>
+            <AdminEmpty>Нет бронирований</AdminEmpty>
           ) : (
             <AdminTableWrap>
               <AdminTable>
                 <thead>
                   <tr>
-                    <th>Час</th>
-                    <th>Стіл</th>
-                    <th>Клієнт</th>
-                    <th>Год.</th>
-                    <th>Сума</th>
+                    <th>Время</th>
+                    <th>Стол</th>
+                    <th>Клиент</th>
+                    <th>Ч.</th>
+                    <th>Сумма</th>
                     <th>Статус</th>
                     <th />
                   </tr>
@@ -219,7 +219,7 @@ export default function BookingsView() {
                       </td>
                       <td>
                         <DangerButton onClick={() => void removeBooking(row.id)}>
-                          Видалити
+                          Удалить
                         </DangerButton>
                       </td>
                     </tr>
@@ -230,9 +230,9 @@ export default function BookingsView() {
           )}
         </AdminCard>
 
-        <AdminCard title="Новий запис">
+        <AdminCard title="Новая запись">
           <div className={styles.formGrid}>
-            <AdminField label="Час">
+            <AdminField label="Время">
               <input
                 type="time"
                 value={time}
@@ -241,18 +241,18 @@ export default function BookingsView() {
                 onChange={(e) => setTime(e.target.value)}
               />
             </AdminField>
-            <AdminField label="Стіл">
+            <AdminField label="Стол">
               <select
                 value={tableNumber}
                 onChange={(e) =>
                   setTableNumber(Number(e.target.value) as 1 | 2)
                 }
               >
-                <option value={1}>Стіл 1</option>
-                <option value={2}>Стіл 2</option>
+                <option value={1}>Стол 1</option>
+                <option value={2}>Стол 2</option>
               </select>
             </AdminField>
-            <AdminField label="Години">
+            <AdminField label="Часы">
               <select
                 value={hours}
                 onChange={(e) => setHours(Number(e.target.value))}
@@ -271,12 +271,12 @@ export default function BookingsView() {
                   checked={blockMode}
                   onChange={(e) => setBlockMode(e.target.checked)}
                 />
-                Заблокувати слот
+                Заблокировать слот
               </label>
             </AdminField>
             {!blockMode ? (
               <>
-                <AdminField label="Ім&apos;я">
+                <AdminField label="Имя">
                   <input value={name} onChange={(e) => setName(e.target.value)} />
                 </AdminField>
                 <AdminField label="Телефон">
@@ -289,8 +289,8 @@ export default function BookingsView() {
                       setStatus(e.target.value as BookingStatus)
                     }
                   >
-                    <option value="confirmed">Підтверджено</option>
-                    <option value="new">Нова</option>
+                    <option value="confirmed">Подтверждено</option>
+                    <option value="new">Новая</option>
                   </select>
                 </AdminField>
               </>
@@ -302,10 +302,10 @@ export default function BookingsView() {
               disabled={submitting}
               onClick={() => void createBooking()}
             >
-              {submitting ? "Збереження…" : "Створити"}
+              {submitting ? "Сохранение…" : "Создать"}
             </PrimaryButton>
             <GhostButton type="button" onClick={() => void load(date)}>
-              Оновити
+              Обновить
             </GhostButton>
           </div>
         </AdminCard>

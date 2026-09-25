@@ -24,10 +24,10 @@ type AnalyticsStats = {
 };
 
 const TYPE_LABELS: Record<string, string> = {
-  pageview: "Перегляди",
-  booking: "Бронювання",
+  pageview: "Просмотры",
+  booking: "Бронирования",
   cta_click: "CTA",
-  scroll_depth: "Скрол",
+  scroll_depth: "Скролл",
 };
 
 export default function AnalyticsView() {
@@ -44,22 +44,22 @@ export default function AnalyticsView() {
   return (
     <>
       <AdminPageHeader
-        title="Аналітика"
-        lead="Події на сайті за останні 30 днів."
+        title="Аналитика"
+        lead="События на сайте за последние 30 дней."
       />
       <div className={styles.grid3}>
-        <StatCard label="Подій" value={stats.events30} />
+        <StatCard label="Событий" value={stats.events30} />
         <StatCard
-          label="Перегляди"
+          label="Просмотры"
           value={stats.byType.find((t) => t.label === "pageview")?.value ?? 0}
         />
         <StatCard
-          label="Бронювання"
+          label="Бронирования"
           value={stats.byType.find((t) => t.label === "booking")?.value ?? 0}
         />
       </div>
       <div className={styles.grid2} style={{ marginTop: 18 }}>
-        <AdminCard title="За типом">
+        <AdminCard title="По типу">
           <ul className={styles.stack}>
             {stats.byType.map((row) => (
               <li key={row.label} className={styles.detailRow}>
@@ -71,9 +71,9 @@ export default function AnalyticsView() {
             ))}
           </ul>
         </AdminCard>
-        <AdminCard title="Мови / локалі">
+        <AdminCard title="Языки / локали">
           {stats.locales.length === 0 ? (
-            <AdminEmpty>Немає даних</AdminEmpty>
+            <AdminEmpty>Нет данных</AdminEmpty>
           ) : (
             <ul className={styles.stack}>
               {stats.locales.map((row) => (
@@ -87,16 +87,16 @@ export default function AnalyticsView() {
         </AdminCard>
       </div>
       <div className={styles.stack} style={{ marginTop: 18 }}>
-        <AdminCard title="Топ сторінок">
+        <AdminCard title="Топ страниц">
           {stats.topPages.length === 0 ? (
-            <AdminEmpty>Немає переглядів</AdminEmpty>
+            <AdminEmpty>Нет просмотров</AdminEmpty>
           ) : (
             <AdminTableWrap>
               <AdminTable>
                 <thead>
                   <tr>
-                    <th>Шлях</th>
-                    <th>Перегляди</th>
+                    <th>Путь</th>
+                    <th>Просмотры</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -111,14 +111,14 @@ export default function AnalyticsView() {
             </AdminTableWrap>
           )}
         </AdminCard>
-        <AdminCard title="Останні події">
+        <AdminCard title="Последние события">
           <AdminTableWrap>
             <AdminTable>
               <thead>
                 <tr>
-                  <th>Час</th>
+                  <th>Время</th>
                   <th>Тип</th>
-                  <th>Шлях</th>
+                  <th>Путь</th>
                   <th>Локаль</th>
                 </tr>
               </thead>

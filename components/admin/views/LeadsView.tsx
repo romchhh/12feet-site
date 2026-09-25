@@ -34,11 +34,11 @@ type LeadsPayload = {
 };
 
 const FILTERS: { id: string; label: string }[] = [
-  { id: "all", label: "Усі" },
-  { id: "new", label: "Нові" },
-  { id: "confirmed", label: "Підтверджені" },
-  { id: "completed", label: "Завершені" },
-  { id: "cancelled", label: "Скасовані" },
+  { id: "all", label: "Все" },
+  { id: "new", label: "Новые" },
+  { id: "confirmed", label: "Подтверждённые" },
+  { id: "completed", label: "Завершённые" },
+  { id: "cancelled", label: "Отменённые" },
 ];
 
 const STATUSES: BookingStatus[] = [
@@ -84,7 +84,7 @@ export default function LeadsView() {
   }
 
   async function removeLead(id: string) {
-    if (!window.confirm("Видалити заявку?")) return;
+    if (!window.confirm("Удалить заявку?")) return;
     setBusyId(id);
     try {
       await adminFetch("/api/admin/leads", {
@@ -103,32 +103,32 @@ export default function LeadsView() {
     <>
       <AdminPageHeader
         title="Заявки"
-        lead="Бронювання з сайту. Оновлюйте статус або видаляйте записи."
+        lead="Бронирования с сайта. Обновляйте статус или удаляйте записи."
       />
       <div className={styles.grid4}>
-        <StatCard label="Усього" value={data.stats.total} />
-        <StatCard label="Нові" value={data.stats.new} />
-        <StatCard label="Підтверджені" value={data.stats.confirmed} />
-        <StatCard label="Дохід" value={formatMoney(data.stats.revenue)} />
+        <StatCard label="Всего" value={data.stats.total} />
+        <StatCard label="Новые" value={data.stats.new} />
+        <StatCard label="Подтверждённые" value={data.stats.confirmed} />
+        <StatCard label="Доход" value={formatMoney(data.stats.revenue)} />
       </div>
       <AdminCard>
         <FilterChips items={FILTERS} value={filter} onChange={setFilter} />
         {rows.length === 0 ? (
-          <AdminEmpty>Немає заявок у цій категорії</AdminEmpty>
+          <AdminEmpty>Нет заявок в этой категории</AdminEmpty>
         ) : (
           <AdminTableWrap>
             <AdminTable>
               <thead>
                 <tr>
-                  <th>Створено</th>
-                  <th>Дата гри</th>
-                  <th>Час</th>
-                  <th>Стіл</th>
-                  <th>Клієнт</th>
+                  <th>Создано</th>
+                  <th>Дата игры</th>
+                  <th>Время</th>
+                  <th>Стол</th>
+                  <th>Клиент</th>
                   <th>Телефон</th>
-                  <th>Сума</th>
+                  <th>Сумма</th>
                   <th>Статус</th>
-                  <th>Дії</th>
+                  <th>Действия</th>
                 </tr>
               </thead>
               <tbody>
@@ -168,7 +168,7 @@ export default function LeadsView() {
                           disabled={busyId === row.id}
                           onClick={() => void removeLead(row.id)}
                         >
-                          Видалити
+                          Удалить
                         </DangerButton>
                       </div>
                     </td>

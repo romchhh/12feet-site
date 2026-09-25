@@ -72,9 +72,9 @@ export function AdminCard({
 }
 
 const STATUS_LABELS: Record<BookingStatus, string> = {
-  new: "Нова",
-  confirmed: "Підтверджено",
-  cancelled: "Скасовано",
+  new: "Новая",
+  confirmed: "Подтверждено",
+  cancelled: "Отменено",
   completed: "Завершено",
   blocked: "Блок",
 };
@@ -161,7 +161,7 @@ export function AdminEmpty({ children }: { children: ReactNode }) {
 }
 
 export function AdminLoading() {
-  return <p className={styles.loading}>Завантаження…</p>;
+  return <p className={styles.loading}>Загрузка…</p>;
 }
 
 export function AdminField({
@@ -207,11 +207,11 @@ export function FilterChips({
 }
 
 export function formatMoney(value: number) {
-  return `${value.toLocaleString("uk-UA")} €`;
+  return `${value.toLocaleString("ru-RU")} €`;
 }
 
 export function formatDateTime(iso: string) {
-  return new Date(iso).toLocaleString("uk-UA", {
+  return new Date(iso).toLocaleString("ru-RU", {
     day: "2-digit",
     month: "2-digit",
     year: "numeric",

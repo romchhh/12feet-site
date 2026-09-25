@@ -39,7 +39,7 @@ export default function DashboardView() {
   }, []);
 
   if (error) {
-    return <p className={styles.empty}>Не вдалося завантажити дані</p>;
+    return <p className={styles.empty}>Не удалось загрузить данные</p>;
   }
 
   if (!stats) return <AdminLoading />;
@@ -47,36 +47,36 @@ export default function DashboardView() {
   return (
     <>
       <AdminPageHeader
-        title="Огляд"
-        lead="Ключові показники сайту та останні бронювання за 30 днів."
+        title="Обзор"
+        lead="Ключевые показатели сайта и последние бронирования за 30 дней."
       />
       <div className={styles.grid4}>
-        <StatCard label="Візити (30 дн.)" value={stats.visits30} />
-        <StatCard label="Бронювання" value={stats.bookingsTotal} hint={`+${stats.bookings30} за 30 дн.`} />
-        <StatCard label="Нові заявки" value={stats.newBookings} />
+        <StatCard label="Визиты (30 дн.)" value={stats.visits30} />
+        <StatCard label="Бронирования" value={stats.bookingsTotal} hint={`+${stats.bookings30} за 30 дн.`} />
+        <StatCard label="Новые заявки" value={stats.newBookings} />
         <StatCard
-          label="Дохід (30 дн.)"
+          label="Доход (30 дн.)"
           value={formatMoney(stats.revenue30)}
-          hint={`Конверсія ${stats.conversion}%`}
+          hint={`Конверсия ${stats.conversion}%`}
         />
       </div>
       <div className={styles.stack} style={{ marginTop: 18 }}>
-        <AdminCard title="Візити за 7 днів" subtitle="Унікальні перегляди сторінок">
+        <AdminCard title="Визиты за 7 дней" subtitle="Уникальные просмотры страниц">
           <AreaChart data={stats.visitsByDay} />
         </AdminCard>
-        <AdminCard title="Останні бронювання">
+        <AdminCard title="Последние бронирования">
           {stats.recentBookings.length === 0 ? (
-            <p className={styles.empty}>Поки немає заявок</p>
+            <p className={styles.empty}>Пока нет заявок</p>
           ) : (
             <AdminTableWrap>
               <AdminTable>
                 <thead>
                   <tr>
                     <th>Дата</th>
-                    <th>Час</th>
-                    <th>Стіл</th>
-                    <th>Клієнт</th>
-                    <th>Сума</th>
+                    <th>Время</th>
+                    <th>Стол</th>
+                    <th>Клиент</th>
+                    <th>Сумма</th>
                     <th>Статус</th>
                   </tr>
                 </thead>

@@ -29,7 +29,7 @@ export default function AdminLoginForm() {
       const next = searchParams.get("next") || "/admin/dashboard";
       router.replace(next.startsWith("/admin") ? next : "/admin/dashboard");
     } catch {
-      setError("Невірний логін або пароль");
+      setError("Неверный логин или пароль");
     } finally {
       setSubmitting(false);
     }
@@ -43,14 +43,14 @@ export default function AdminLoginForm() {
           <span className={styles.badge}>Admin</span>
         </div>
         <div className={styles.intro}>
-          <h1 className={styles.title}>Вхід до панелі</h1>
+          <h1 className={styles.title}>Вход в панель</h1>
           <p className={styles.lead}>
-            Керуйте бронюваннями, меню та аналітикою клубу 12 FEET.
+            Управляйте бронированиями, меню и аналитикой клуба 12 FEET.
           </p>
         </div>
         <form className={styles.form} onSubmit={handleSubmit}>
           <label className={styles.field}>
-            <span>Логін</span>
+            <span>Логин</span>
             <input
               type="text"
               name="login"
@@ -77,13 +77,13 @@ export default function AdminLoginForm() {
               checked={remember}
               onChange={(e) => setRemember(e.target.checked)}
             />
-            Запам&apos;ятати мене
+            Запомнить меня
           </label>
           {error && <p className={styles.error}>{error}</p>}
           <button className={styles.submit} type="submit" disabled={submitting}>
-            {submitting ? "Вхід…" : "Увійти"}
+            {submitting ? "Вход…" : "Войти"}
           </button>
-          <p className={styles.hint}>Доступ лише для персоналу клубу.</p>
+          <p className={styles.hint}>Доступ только для персонала клуба.</p>
         </form>
       </div>
       <div className={styles.visual} aria-hidden>

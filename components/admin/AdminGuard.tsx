@@ -19,7 +19,7 @@ export default function AdminGuard({ children }: { children: ReactNode }) {
   }, [user, loading, router, pathname]);
 
   if (loading) {
-    return <div className={styles.loading}>Завантаження…</div>;
+    return <div className={styles.loading}>Загрузка…</div>;
   }
 
   if (!user) {

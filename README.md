@@ -35,7 +35,7 @@ npm install
 npm run dev
 ```
 
-Відкрити http://localhost:3000
+Відкрити http://localhost:3001
 
 ## Продакшн-збірка
 

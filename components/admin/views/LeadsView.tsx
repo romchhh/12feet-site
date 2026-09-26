@@ -11,6 +11,7 @@ import {
   AdminTableWrap,
   DangerButton,
   FilterChips,
+  PrimaryButton,
   StatCard,
   StatusBadge,
   bookingStatusLabel,
@@ -19,6 +20,7 @@ import {
 } from "@/components/admin/AdminUi";
 import styles from "@/components/admin/AdminUi.module.css";
 import type { Booking, BookingStatus } from "@/lib/cms/store";
+import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
 type LeadsPayload = {
@@ -49,6 +51,7 @@ const STATUSES: BookingStatus[] = [
 ];
 
 export default function LeadsView() {
+  const router = useRouter();
   const [data, setData] = useState<LeadsPayload | null>(null);
   const [filter, setFilter] = useState("all");
   const [busyId, setBusyId] = useState<string | null>(null);
@@ -61,7 +64,19 @@ export default function LeadsView() {
   }
 
   useEffect(() => {
-    void load().catch(() => setData({ leads: [], stats: { total: 0, new: 0, confirmed: 0, completed: 0, cancelled: 0, revenue: 0 } }));
+    void load().catch(() =>
+      setData({
+        leads: [],
+        stats: {
+          total: 0,
+          new: 0,
+          confirmed: 0,
+          completed: 0,
+          cancelled: 0,
+          revenue: 0,
+        },
+      }),
+    );
   }, []);
 
   const rows = useMemo(() => {
@@ -70,7 +85,7 @@ export default function LeadsView() {
     return data.leads.filter((row) => row.status === filter);
   }, [data, filter]);
 
-  async function updateStatus(id: string, status: BookingStatus) {
+  async function updateStatus(id: string, status: BookingStatus, date?: string) {
     setBusyId(id);
     try {
       await adminFetch("/api/admin/leads", {
@@ -78,6 +93,23 @@ export default function LeadsView() {
         body: JSON.stringify({ id, status }),
       });
       await load();
+      if (status === "confirmed" && date) {
+        router.push(`/admin/bookings?date=${encodeURIComponent(date)}`);
+      }
+    } finally {
+      setBusyId(null);
+    }
+  }
+
+  async function confirmLead(row: Booking) {
+    setBusyId(row.id);
+    try {
+      await adminFetch("/api/admin/leads", {
+        method: "PATCH",
+        body: JSON.stringify({ id: row.id, status: "confirmed" }),
+      });
+      await load();
+      router.push(`/admin/bookings?date=${encodeURIComponent(row.date)}`);
     } finally {
       setBusyId(null);
     }
@@ -103,7 +135,7 @@ export default function LeadsView() {
     <>
       <AdminPageHeader
         title="Заявки"
-        lead="Бронирования с сайта. Обновляйте статус или удаляйте записи."
+        lead="Новые заявки с сайта. После подтверждения бронь появляется во вкладке «Бронирования»."
       />
       <div className={styles.grid4}>
         <StatCard label="Всего" value={data.stats.total} />
@@ -146,6 +178,14 @@ export default function LeadsView() {
                     </td>
                     <td>
                       <div className={styles.formActions}>
+                        {row.status === "new" ? (
+                          <PrimaryButton
+                            disabled={busyId === row.id}
+                            onClick={() => void confirmLead(row)}
+                          >
+                            Подтвердить
+                          </PrimaryButton>
+                        ) : null}
                         <AdminField label="Статус">
                           <select
                             value={row.status}
@@ -154,6 +194,7 @@ export default function LeadsView() {
                               void updateStatus(
                                 row.id,
                                 e.target.value as BookingStatus,
+                                row.date,
                               )
                             }
                           >
@@ -164,6 +205,20 @@ export default function LeadsView() {
                             ))}
                           </select>
                         </AdminField>
+                        {row.status === "confirmed" ||
+                        row.status === "completed" ? (
+                          <PrimaryButton
+                            type="button"
+                            disabled={busyId === row.id}
+                            onClick={() =>
+                              router.push(
+                                `/admin/bookings?date=${encodeURIComponent(row.date)}`,
+                              )
+                            }
+                          >
+                            В календарь
+                          </PrimaryButton>
+                        ) : null}
                         <DangerButton
                           disabled={busyId === row.id}
                           onClick={() => void removeLead(row.id)}

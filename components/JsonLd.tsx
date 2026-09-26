@@ -1,4 +1,4 @@
-import { siteUrl } from "@/lib/site";
+import { sitePhoneTel, siteUrl } from "@/lib/site";
 import type { Dictionary } from "@/lib/i18n/types";
 
 type Props = {
@@ -13,6 +13,7 @@ export default function JsonLd({ dict, locale }: Props) {
     name: "12 FEET",
     description: dict.meta.description,
     url: `${siteUrl}/${locale}`,
+    telephone: sitePhoneTel,
     address: {
       "@type": "PostalAddress",
       streetAddress: "Záhradnícka 36",

@@ -18,10 +18,15 @@ import {
 import styles from "@/components/admin/AdminUi.module.css";
 import { bookingEndMinutes, timeToMinutes } from "@/lib/cms/bookings";
 import type { Booking, BookingStatus } from "@/lib/cms/store";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 
 function todayIso() {
-  return new Date().toISOString().slice(0, 10);
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${y}-${m}-${day}`;
 }
 
 function buildTimeSlots(): string[] {
@@ -46,11 +51,19 @@ function slotLabel(booking: Booking) {
 }
 
 export default function BookingsView() {
-  const [date, setDate] = useState(todayIso());
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const dateFromUrl = searchParams.get("date");
+  const [date, setDate] = useState(
+    dateFromUrl && /^\d{4}-\d{2}-\d{2}$/.test(dateFromUrl)
+      ? dateFromUrl
+      : todayIso(),
+  );
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
   const [formError, setFormError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [busyId, setBusyId] = useState<string | null>(null);
 
   const [time, setTime] = useState("18:00");
   const [tableNumber, setTableNumber] = useState<1 | 2>(1);
@@ -59,6 +72,13 @@ export default function BookingsView() {
   const [phone, setPhone] = useState("");
   const [status, setStatus] = useState<BookingStatus>("confirmed");
   const [blockMode, setBlockMode] = useState(false);
+
+  useEffect(() => {
+    if (dateFromUrl && /^\d{4}-\d{2}-\d{2}$/.test(dateFromUrl) && dateFromUrl !== date) {
+      setDate(dateFromUrl);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- sync URL → state only
+  }, [dateFromUrl]);
 
   async function load(selectedDate: string) {
     setLoading(true);
@@ -76,6 +96,24 @@ export default function BookingsView() {
     void load(date);
   }, [date]);
 
+  function changeDate(next: string) {
+    setDate(next);
+    router.replace(`/admin/bookings?date=${encodeURIComponent(next)}`);
+  }
+
+  const calendarBookings = useMemo(
+    () =>
+      bookings.filter((b) =>
+        ["confirmed", "blocked", "completed"].includes(b.status),
+      ),
+    [bookings],
+  );
+
+  const pendingBookings = useMemo(
+    () => bookings.filter((b) => b.status === "new"),
+    [bookings],
+  );
+
   const byTable = useMemo(() => {
     return {
       1: bookings.filter((b) => b.tableNumber === 1),
@@ -92,6 +130,19 @@ export default function BookingsView() {
       if (start >= bStart && start < bEnd) return booking;
     }
     return null;
+  }
+
+  async function confirmPending(id: string) {
+    setBusyId(id);
+    try {
+      await adminFetch("/api/admin/leads", {
+        method: "PATCH",
+        body: JSON.stringify({ id, status: "confirmed" }),
+      });
+      await load(date);
+    } finally {
+      setBusyId(null);
+    }
   }
 
   async function createBooking() {
@@ -163,14 +214,14 @@ export default function BookingsView() {
     <>
       <AdminPageHeader
         title="Бронирования"
-        lead="Календарь столов на выбранный день и ручное создание бронирований."
+        lead="Подтверждённые брони и блокировки слотов. Новые заявки с сайта подтверждаются во вкладке «Заявки»."
       />
       <AdminCard>
         <AdminField label="Дата">
           <input
             type="date"
             value={date}
-            onChange={(e) => setDate(e.target.value)}
+            onChange={(e) => changeDate(e.target.value)}
           />
         </AdminField>
       </AdminCard>
@@ -188,10 +239,62 @@ export default function BookingsView() {
         </div>
       )}
 
+      {pendingBookings.length > 0 ? (
+        <div style={{ marginTop: 18 }}>
+          <AdminCard
+            title="Ожидают подтверждения"
+            subtitle="Заявки с сайта на этот день — подтвердите, чтобы добавить в календарь."
+          >
+            <AdminTableWrap>
+              <AdminTable>
+                <thead>
+                  <tr>
+                    <th>Время</th>
+                    <th>Стол</th>
+                    <th>Клиент</th>
+                    <th>Телефон</th>
+                    <th>Ч.</th>
+                    <th>Сумма</th>
+                    <th />
+                  </tr>
+                </thead>
+                <tbody>
+                  {pendingBookings.map((row) => (
+                    <tr key={row.id}>
+                      <td>{slotLabel(row)}</td>
+                      <td>{row.tableNumber}</td>
+                      <td>{row.name}</td>
+                      <td>{row.phone}</td>
+                      <td>{row.hours}</td>
+                      <td>{formatMoney(row.total)}</td>
+                      <td>
+                        <div className={styles.formActions}>
+                          <PrimaryButton
+                            disabled={busyId === row.id}
+                            onClick={() => void confirmPending(row.id)}
+                          >
+                            Подтвердить
+                          </PrimaryButton>
+                          <DangerButton
+                            onClick={() => void removeBooking(row.id)}
+                          >
+                            Удалить
+                          </DangerButton>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </AdminTable>
+            </AdminTableWrap>
+          </AdminCard>
+        </div>
+      ) : null}
+
       <div className={styles.grid2} style={{ marginTop: 18 }}>
-        <AdminCard title="Записи на день">
-          {bookings.length === 0 ? (
-            <AdminEmpty>Нет бронирований</AdminEmpty>
+        <AdminCard title="Подтверждённые на день">
+          {calendarBookings.length === 0 ? (
+            <AdminEmpty>Нет подтверждённых бронирований</AdminEmpty>
           ) : (
             <AdminTableWrap>
               <AdminTable>
@@ -207,7 +310,7 @@ export default function BookingsView() {
                   </tr>
                 </thead>
                 <tbody>
-                  {bookings.map((row) => (
+                  {calendarBookings.map((row) => (
                     <tr key={row.id}>
                       <td>{slotLabel(row)}</td>
                       <td>{row.tableNumber}</td>

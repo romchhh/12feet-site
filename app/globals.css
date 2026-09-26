@@ -678,6 +678,16 @@ h4 {
 .visit-bullets li:last-child {
   border-bottom: 0;
 }
+.visit-phone-link {
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: none;
+}
+.visit-phone-link:hover {
+  color: #0c4634;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
 .visit-map-wrap {
   padding: 0;
   overflow: hidden;
@@ -1323,7 +1333,7 @@ h4 {
 }
 .footer-cols {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 20px;
   font-size: 1.05rem;
   line-height: 1.55;
@@ -1377,16 +1387,20 @@ h4 {
     display: none;
   }
   .nav-cta {
-    display: inline-flex;
-    --btn-circle: 30px;
-    --btn-pad-block: 6px;
-    --btn-pad-inline-start: 14px;
-    --btn-pad-inline-end: 6px;
-    --btn-gap: 10px;
-    font-size: 11px;
+    display: none;
+  }
+  .nav-end {
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  .lang-switch--header .lang-switch-trigger {
+    padding: 5px 7px;
+    font-size: 9px;
   }
   .nav-toggle {
     display: flex;
+    width: 40px;
+    height: 40px;
   }
   .hero-head.menu-open {
     z-index: 100;

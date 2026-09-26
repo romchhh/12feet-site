@@ -1,10 +1,12 @@
 import type { Locale } from "@/lib/i18n/config";
 import { getMenuColumns } from "@/lib/i18n/menu-columns";
 import type { Dictionary, DictionaryBase } from "@/lib/i18n/types";
+import { sitePhoneDisplay } from "@/lib/site";
 
 const shared = {
   address: "Záhradnícka 36, Bratislava",
   hoursShort: "Tue–Thu 12:00–00:00 · Fri–Sun 12:00–02:00",
+  phone: sitePhoneDisplay,
 };
 
 const dictionaries: Record<Locale, DictionaryBase> = {
@@ -133,6 +135,7 @@ const dictionaries: Record<Locale, DictionaryBase> = {
       lead: "Príďte priamo do klubu alebo si najprv rezervujte stôl online.",
       bullets: [
         shared.address,
+        shared.phone,
         "Ut – Št 12:00 – 00:00",
         "Pi – Ne 12:00 – 02:00",
         "Rezervácia cez formulár na tejto stránke",
@@ -150,7 +153,7 @@ const dictionaries: Record<Locale, DictionaryBase> = {
       name: "Meno",
       namePh: "Vaše meno",
       phone: "Telefón",
-      phonePh: "+421 …",
+      phonePh: shared.phone,
       previewEmpty: "Zvoľte dátum a čas",
       total: "Spolu",
       submit: "Rezervovať",
@@ -325,6 +328,7 @@ const dictionaries: Record<Locale, DictionaryBase> = {
       lead: "Walk in or book a table online first.",
       bullets: [
         shared.address,
+        shared.phone,
         "Tue – Thu 12:00 – 00:00",
         "Fri – Sun 12:00 – 02:00",
         "Booking via the form on this page",
@@ -342,7 +346,7 @@ const dictionaries: Record<Locale, DictionaryBase> = {
       name: "Name",
       namePh: "Your name",
       phone: "Phone",
-      phonePh: "+421 …",
+      phonePh: shared.phone,
       previewEmpty: "Choose date and time",
       total: "Total",
       submit: "Book now",
@@ -516,6 +520,7 @@ const dictionaries: Record<Locale, DictionaryBase> = {
       lead: "Приходите в клуб или сначала забронируйте стол онлайн.",
       bullets: [
         shared.address,
+        shared.phone,
         "Вт – Чт 12:00 – 00:00",
         "Пт – Вс 12:00 – 02:00",
         "Бронь через форму на этой странице",
@@ -533,7 +538,7 @@ const dictionaries: Record<Locale, DictionaryBase> = {
       name: "Имя",
       namePh: "Ваше имя",
       phone: "Телефон",
-      phonePh: "+421 …",
+      phonePh: shared.phone,
       previewEmpty: "Укажите дату и время",
       total: "Итого",
       submit: "Забронировать",
@@ -708,6 +713,7 @@ const dictionaries: Record<Locale, DictionaryBase> = {
       lead: "Приходьте в клуб або спочатку забронюйте стіл онлайн.",
       bullets: [
         shared.address,
+        shared.phone,
         "Вт – Чт 12:00 – 00:00",
         "Пт – Нд 12:00 – 02:00",
         "Бронь через форму на цій сторінці",
@@ -725,7 +731,7 @@ const dictionaries: Record<Locale, DictionaryBase> = {
       name: "Ім'я",
       namePh: "Ваше ім'я",
       phone: "Телефон",
-      phonePh: "+421 …",
+      phonePh: shared.phone,
       previewEmpty: "Вкажіть дату й час",
       total: "Разом",
       submit: "Забронювати",
@@ -900,6 +906,7 @@ const dictionaries: Record<Locale, DictionaryBase> = {
       lead: "Kommen Sie vorbei oder reservieren Sie zuerst online.",
       bullets: [
         shared.address,
+        shared.phone,
         "Di – Do 12:00 – 00:00",
         "Fr – So 12:00 – 02:00",
         "Reservierung über das Formular",
@@ -917,7 +924,7 @@ const dictionaries: Record<Locale, DictionaryBase> = {
       name: "Name",
       namePh: "Ihr Name",
       phone: "Telefon",
-      phonePh: "+421 …",
+      phonePh: shared.phone,
       previewEmpty: "Datum und Uhrzeit wählen",
       total: "Gesamt",
       submit: "Reservieren",

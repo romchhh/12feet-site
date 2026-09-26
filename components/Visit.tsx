@@ -1,5 +1,6 @@
 import SectionHead from "@/components/SectionHead";
 import type { Dictionary } from "@/lib/i18n/types";
+import { sitePhoneDisplay, sitePhoneTel } from "@/lib/site";
 
 const MAP_LINK =
   "https://www.google.com/maps/search/?api=1&query=Z%C3%A1hradn%C3%ADcka+36+Bratislava";
@@ -17,7 +18,15 @@ export default function Visit({ dict }: Props) {
         <div className="visit-grid">
           <ul className="visit-bullets ui-card">
             {t.bullets.map((line) => (
-              <li key={line}>{line}</li>
+              <li key={line}>
+                {line === sitePhoneDisplay ? (
+                  <a className="visit-phone-link" href={`tel:${sitePhoneTel}`}>
+                    {line}
+                  </a>
+                ) : (
+                  line
+                )}
+              </li>
             ))}
           </ul>
           <div className="ui-card visit-map-wrap">
@@ -30,7 +39,12 @@ export default function Visit({ dict }: Props) {
               referrerPolicy="no-referrer-when-downgrade"
             />
             <div className="visit-map-cap">
-              <p>Záhradnícka 36 · Bratislava</p>
+              <p>
+                Záhradnícka 36 · Bratislava ·{" "}
+                <a className="visit-phone-link" href={`tel:${sitePhoneTel}`}>
+                  {sitePhoneDisplay}
+                </a>
+              </p>
               <a href={MAP_LINK} target="_blank" rel="noopener noreferrer">
                 {t.mapLabel} →
               </a>

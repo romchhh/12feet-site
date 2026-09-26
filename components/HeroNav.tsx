@@ -80,7 +80,23 @@ export default function HeroNav({ locale, dict }: Props) {
         </ul>
 
         <div className="nav-end">
-          <LanguageSwitcher locale={locale} variant="header" />
+          <div className="nav-mobile-cluster">
+            <LanguageSwitcher locale={locale} variant="header" />
+            <button
+              type="button"
+              className="nav-toggle"
+              aria-expanded={open}
+              aria-controls="nav-menu"
+              aria-label={open ? n.closeMenu : n.openMenu}
+              onClick={() => setOpen((v) => !v)}
+            >
+              <span className="nav-toggle-lines" aria-hidden="true">
+                <span />
+                <span />
+                <span />
+              </span>
+            </button>
+          </div>
           <a href="#book" className="btn green nav-cta" aria-label={n.book}>
             <span className="btn-label nav-cta-label nav-cta-label--long">
               {n.book}
@@ -90,20 +106,6 @@ export default function HeroNav({ locale, dict }: Props) {
             </span>
             <i aria-hidden="true">→</i>
           </a>
-          <button
-            type="button"
-            className="nav-toggle"
-            aria-expanded={open}
-            aria-controls="nav-menu"
-            aria-label={open ? n.closeMenu : n.openMenu}
-            onClick={() => setOpen((v) => !v)}
-          >
-            <span className="nav-toggle-lines" aria-hidden="true">
-              <span />
-              <span />
-              <span />
-            </span>
-          </button>
         </div>
       </nav>
 
@@ -147,6 +149,22 @@ export default function HeroNav({ locale, dict }: Props) {
           </a>
         </div>
       </div>
+
+      <a
+        href="#book"
+        className={[
+          "btn",
+          "green",
+          "book-fab",
+          scrolled && !open ? "is-visible" : "",
+        ]
+          .filter(Boolean)
+          .join(" ")}
+        aria-label={n.book}
+      >
+        <span className="btn-label">{n.book}</span>
+        <i aria-hidden="true">→</i>
+      </a>
     </div>
   );
 }

@@ -81,8 +81,13 @@ export default function HeroNav({ locale, dict }: Props) {
 
         <div className="nav-end">
           <LanguageSwitcher locale={locale} variant="header" />
-          <a href="#book" className="btn green nav-cta">
-            <span className="btn-label">{n.book}</span>
+          <a href="#book" className="btn green nav-cta" aria-label={n.book}>
+            <span className="btn-label nav-cta-label nav-cta-label--long">
+              {n.book}
+            </span>
+            <span className="btn-label nav-cta-label nav-cta-label--short">
+              {n.bookShort}
+            </span>
             <i aria-hidden="true">→</i>
           </a>
           <button

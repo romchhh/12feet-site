@@ -13,6 +13,7 @@ export type Dictionary = {
     menu: string;
     visit: string;
     book: string;
+    bookShort: string;
     openMenu: string;
     closeMenu: string;
     menuDialog: string;

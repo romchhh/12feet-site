@@ -1,7 +1,8 @@
 import { getBookingRate, isValidDateISO } from "@/lib/booking-rates";
+import { TABLE_NUMBERS } from "@/lib/booking-tables";
 import { isSlotAvailable } from "@/lib/cms/bookings";
 import {
-  BOOKING_TIME_SLOTS,
+  buildTimeSlotsForDate,
   isPastDate,
   slotFitsHours,
 } from "@/lib/booking-slots";
@@ -24,25 +25,20 @@ export async function GET(request: Request) {
   const db = readDb();
   const rate = getBookingRate(date);
 
-  const slots = BOOKING_TIME_SLOTS.filter((time) =>
-    slotFitsHours(time, hours),
-  ).map((time) => ({
-    time,
-    tables: {
-      1: isSlotAvailable(db.bookings, {
-        date,
-        time,
-        hours,
-        tableNumber: 1,
-      }),
-      2: isSlotAvailable(db.bookings, {
-        date,
-        time,
-        hours,
-        tableNumber: 2,
-      }),
-    } as Record<1 | 2, boolean>,
-  }));
+  const slots = buildTimeSlotsForDate(date)
+    .filter((time) => slotFitsHours(time, hours, date))
+    .map((time) => {
+      const tables = {} as Record<1 | 2 | 3, boolean>;
+      for (const tableNumber of TABLE_NUMBERS) {
+        tables[tableNumber] = isSlotAvailable(db.bookings, {
+          date,
+          time,
+          hours,
+          tableNumber,
+        });
+      }
+      return { time, tables };
+    });
 
   return NextResponse.json({
     ok: true,

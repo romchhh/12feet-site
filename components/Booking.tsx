@@ -7,6 +7,8 @@ import {
   WEEKDAY_PRICE,
   WEEKEND_PRICE,
 } from "@/lib/booking-rates";
+import type { TableNumber } from "@/lib/booking-tables";
+import { PARTY_TABLE, TABLE_NUMBERS } from "@/lib/booking-tables";
 import { parseISODate, startOfDay, toISODate } from "@/lib/booking-slots";
 import type { Locale } from "@/lib/i18n/config";
 import type { Dictionary } from "@/lib/i18n/types";
@@ -24,7 +26,7 @@ const dateLocales: Record<Locale, string> = {
 
 type SlotInfo = {
   time: string;
-  tables: Record<1 | 2, boolean>;
+  tables: Record<TableNumber, boolean>;
 };
 
 type Step = 1 | 2 | 3;
@@ -81,17 +83,6 @@ function buildMonthCells(year: number, month: number) {
   return cells;
 }
 
-function freeTableCount(slot: SlotInfo) {
-  return (slot.tables[1] ? 1 : 0) + (slot.tables[2] ? 1 : 0);
-}
-
-function pickFreeTable(slot: SlotInfo, preferred?: 1 | 2): 1 | 2 | null {
-  if (preferred && slot.tables[preferred]) return preferred;
-  if (slot.tables[1]) return 1;
-  if (slot.tables[2]) return 2;
-  return null;
-}
-
 function isBookHref(href: string | null) {
   if (!href) return false;
   return href === "#book" || href.endsWith("#book");
@@ -108,7 +99,7 @@ export default function Booking({ locale, dict }: Props) {
   const [viewMonth, setViewMonth] = useState(today.getMonth());
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
-  const [tableNumber, setTableNumber] = useState<1 | 2>(1);
+  const [tableNumber, setTableNumber] = useState<TableNumber>(1);
   const [hours, setHours] = useState(2);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -136,6 +127,12 @@ export default function Booking({ locale, dict }: Props) {
     const floor = new Date(today.getFullYear(), today.getMonth(), 1);
     return prev >= floor;
   }, [viewYear, viewMonth, today]);
+
+  function tableLabelFor(n: TableNumber) {
+    if (n === 1) return t.table1;
+    if (n === 2) return t.table2;
+    return t.table3;
+  }
 
   const openWizard = useCallback(() => {
     setOpen(true);
@@ -197,9 +194,7 @@ export default function Booking({ locale, dict }: Props) {
         setTime((prev) => {
           if (!prev) return prev;
           const slot = data.slots.find((s) => s.time === prev);
-          if (!slot || freeTableCount(slot) === 0) return "";
-          const nextTable = pickFreeTable(slot);
-          if (nextTable) setTableNumber(nextTable);
+          if (!slot || !slot.tables[tableNumber]) return "";
           return prev;
         });
       })
@@ -212,7 +207,7 @@ export default function Booking({ locale, dict }: Props) {
     return () => {
       cancelled = true;
     };
-  }, [open, date, hours, step]);
+  }, [open, date, hours, step, tableNumber]);
 
   useEffect(() => {
     if (!open) return;
@@ -244,11 +239,15 @@ export default function Booking({ locale, dict }: Props) {
     setConflictError(false);
   }
 
+  function selectTable(next: TableNumber) {
+    setTableNumber(next);
+    setTime("");
+    setConflictError(false);
+  }
+
   function selectSlot(slot: SlotInfo) {
-    const table = pickFreeTable(slot);
-    if (!table) return;
+    if (!slot.tables[tableNumber]) return;
     setTime(slot.time);
-    setTableNumber(table);
     setConflictError(false);
   }
 
@@ -274,38 +273,6 @@ export default function Booking({ locale, dict }: Props) {
       });
 
       if (res.status === 409) {
-        // Try the other table once if available
-        const slot = slots.find((s) => s.time === time);
-        const other: 1 | 2 = tableNumber === 1 ? 2 : 1;
-        if (slot?.tables[other]) {
-          const retry = await fetch("/api/booking", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              locale,
-              date,
-              time,
-              tableNumber: other,
-              hours,
-              name: name.trim(),
-              phone: phone.trim(),
-            }),
-          });
-          if (retry.ok) {
-            const label = other === 1 ? t.table1 : t.table2;
-            setTableNumber(other);
-            setDoneLabel(
-              `${formatDateLong(date, locale)}, ${formatTimeRange(time, hours)} · ${label}`,
-            );
-            setSubmitted(true);
-            setName("");
-            setPhone("");
-            setDate("");
-            setTime("");
-            setStep(1);
-            return;
-          }
-        }
         setConflictError(true);
         setStep(2);
         return;
@@ -315,9 +282,8 @@ export default function Booking({ locale, dict }: Props) {
         return;
       }
 
-      const tableLabel = tableNumber === 1 ? t.table1 : t.table2;
       setDoneLabel(
-        `${formatDateLong(date, locale)}, ${formatTimeRange(time, hours)} · ${tableLabel}`,
+        `${formatDateLong(date, locale)}, ${formatTimeRange(time, hours)} · ${tableLabelFor(tableNumber)}`,
       );
       setSubmitted(true);
       setName("");
@@ -334,8 +300,8 @@ export default function Booking({ locale, dict }: Props) {
 
   const stepTitle =
     step === 1 ? t.stepWhen : step === 2 ? t.stepSlot : t.stepContact;
-  const tableLabel = tableNumber === 1 ? t.table1 : t.table2;
-  const freeSlotCount = slots.filter((s) => freeTableCount(s) > 0).length;
+  const tableLabel = tableLabelFor(tableNumber);
+  const freeSlotCount = slots.filter((s) => s.tables[tableNumber]).length;
 
   const canContinue =
     step === 1
@@ -432,7 +398,7 @@ export default function Booking({ locale, dict }: Props) {
                                   ? formatDateLong(date, locale)
                                   : t.pickTime
                                 : date && time
-                                  ? `${formatDateLong(date, locale)} · ${formatTimeRange(time, hours)}`
+                                  ? `${formatDateLong(date, locale)} · ${formatTimeRange(time, hours)} · ${tableLabel}`
                                   : t.stepContact}
                           </p>
                         </div>
@@ -533,7 +499,45 @@ export default function Booking({ locale, dict }: Props) {
 
                         {step === 2 ? (
                           <>
-                            <p className={styles.hint}>{t.autoTable}</p>
+                            <div className={styles.block}>
+                              <span className={styles.blockLabel}>
+                                {t.pickTable}
+                              </span>
+                              <div className={styles.tablePick}>
+                                {TABLE_NUMBERS.map((n) => {
+                                  const freeN = slots.filter(
+                                    (s) => s.tables[n],
+                                  ).length;
+                                  const active = tableNumber === n;
+                                  return (
+                                    <button
+                                      key={n}
+                                      type="button"
+                                      className={`${styles.tableBtn} ${
+                                        active ? styles.tableBtnActive : ""
+                                      }`}
+                                      onClick={() => selectTable(n)}
+                                    >
+                                      <span className={styles.tableBtnTitle}>
+                                        {tableLabelFor(n)}
+                                      </span>
+                                      {n === PARTY_TABLE ? (
+                                        <span className={styles.tableBtnHint}>
+                                          {t.table3Hint}
+                                        </span>
+                                      ) : null}
+                                      {!slotsLoading && slots.length > 0 ? (
+                                        <span className={styles.tableBtnMeta}>
+                                          {freeN > 0
+                                            ? `${freeN} ${t.free.toLowerCase()}`
+                                            : t.busy}
+                                        </span>
+                                      ) : null}
+                                    </button>
+                                  );
+                                })}
+                              </div>
+                            </div>
                             <div className={styles.block}>
                               <span className={styles.blockLabel}>
                                 {t.hours}
@@ -560,6 +564,7 @@ export default function Booking({ locale, dict }: Props) {
                               <span className={styles.blockLabel}>
                                 {t.time}
                                 {rate !== null ? ` · ${rate}${t.perHour}` : ""}
+                                {` · ${tableLabel}`}
                               </span>
                               {slotsLoading ? (
                                 <p className={styles.slotsEmpty}>
@@ -570,14 +575,9 @@ export default function Booking({ locale, dict }: Props) {
                               ) : (
                                 <div className={styles.slots}>
                                   {slots.map((slot) => {
-                                    const freeN = freeTableCount(slot);
-                                    const free = freeN > 0;
+                                    const free = slot.tables[tableNumber];
                                     const active = time === slot.time;
                                     const slotTotal = (rate ?? 0) * hours;
-                                    const freeLabel = t.tablesFree.replace(
-                                      "{n}",
-                                      String(freeN),
-                                    );
                                     return (
                                       <button
                                         key={slot.time}
@@ -597,7 +597,7 @@ export default function Booking({ locale, dict }: Props) {
                                         </span>
                                         <span className={styles.slotMeta}>
                                           {free
-                                            ? `${slotTotal} € · ${freeLabel}`
+                                            ? `${slotTotal} € · ${t.free}`
                                             : t.busy}
                                         </span>
                                       </button>
@@ -620,7 +620,11 @@ export default function Booking({ locale, dict }: Props) {
                                 {formatTimeRange(time, hours)}
                               </p>
                               <p className={styles.summaryMuted}>
-                                {tableLabel} · {hours} {hoursLabel}
+                                {tableLabel}
+                                {tableNumber === PARTY_TABLE
+                                  ? ` · ${t.table3Hint}`
+                                  : ""}{" "}
+                                · {hours} {hoursLabel}
                               </p>
                               <div className={styles.summaryTotal}>
                                 <span>{t.total}</span>

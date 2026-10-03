@@ -109,6 +109,8 @@ export type Dictionary = {
     submit: string;
     table1: string;
     table2: string;
+    table3: string;
+    table3Hint: string;
     perHour: string;
     hourUnit: string;
     hoursUnit: string;
@@ -123,6 +125,7 @@ export type Dictionary = {
     loadingSlots: string;
     pickDate: string;
     pickTime: string;
+    pickTable: string;
     weekdayShort: string;
     weekendShort: string;
     continue: string;
@@ -134,8 +137,6 @@ export type Dictionary = {
     successTitle: string;
     successText: string;
     successOk: string;
-    autoTable: string;
-    tablesFree: string;
   };
   footer: {
     logo: string;

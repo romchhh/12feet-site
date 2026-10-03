@@ -1,3 +1,4 @@
+import type { TableNumber } from "@/lib/booking-tables";
 import { getMenuColumns } from "@/lib/i18n/menu-columns";
 import type { MenuColumn } from "@/types";
 import fs from "fs";
@@ -16,7 +17,7 @@ export type Booking = {
   id: string;
   date: string;
   time: string;
-  tableNumber: 1 | 2;
+  tableNumber: TableNumber;
   hours: number;
   name: string;
   phone: string;
@@ -119,6 +120,55 @@ export function menuColumnFromStatic(col: MenuColumn): CmsMenuColumn {
   };
 }
 
+/** Move nested tea (subItems under coffee) into its own category above coffee. */
+function migrateMenuTea(menu: CmsMenuColumn[]): {
+  menu: CmsMenuColumn[];
+  changed: boolean;
+} {
+  let changed = false;
+  let nestedTea: CmsMenuColumn | null = null;
+
+  const cleaned = menu.map((col) => {
+    const hasNestedTea =
+      Boolean(col.subItems?.length) &&
+      /tea|čaj|чай|tee/i.test(col.subheading || "");
+    if (!hasNestedTea) return col;
+
+    changed = true;
+    if (!nestedTea) {
+      nestedTea = {
+        id: uid("cat"),
+        heading: (col.subheading || "Čaj sypaný")
+          .replace(/\s*·\s*.*$/, "")
+          .trim(),
+        items: (col.subItems || []).map((name) => ({
+          id: uid("item"),
+          name,
+          price: "3,50 €",
+        })),
+      };
+    }
+    const next = { ...col };
+    delete next.subheading;
+    delete next.subItems;
+    return next;
+  });
+
+  if (!nestedTea) return { menu: cleaned, changed };
+
+  const alreadyHasTea = cleaned.some((col) =>
+    /tea|čaj|чай|tee/i.test(col.heading),
+  );
+  if (alreadyHasTea) return { menu: cleaned, changed };
+
+  const coffeeIdx = cleaned.findIndex((col) =>
+    /káva|coffee|кофе|кава|kaffee/i.test(col.heading),
+  );
+  const next = [...cleaned];
+  next.splice(coffeeIdx >= 0 ? coffeeIdx : 0, 0, nestedTea);
+  return { menu: next, changed: true };
+}
+
 function defaultDb(): CmsDb {
   const login = process.env.ADMIN_LOGIN || "admin";
   const password = process.env.ADMIN_PASSWORD || "12feet2025";
@@ -172,13 +222,19 @@ export function readDb(): CmsDb {
 
     const raw = fs.readFileSync(DB_PATH, "utf8");
     const parsed = JSON.parse(raw) as CmsDb;
+    const baseMenu = parsed.menu?.length ? parsed.menu : seedMenu();
+    const migrated = migrateMenuTea(baseMenu);
     const db: CmsDb = {
       bookings: parsed.bookings || [],
-      menu: parsed.menu?.length ? parsed.menu : seedMenu(),
+      menu: migrated.menu,
       analytics: parsed.analytics || [],
       users: parsed.users?.length ? parsed.users : defaultDb().users,
       sessions: parsed.sessions || [],
     };
+    if (migrated.changed) {
+      writeDb(db);
+      return db;
+    }
     g.__twelveFeetCmsDb = db;
     g.__twelveFeetCmsMtime = mtime;
     return db;

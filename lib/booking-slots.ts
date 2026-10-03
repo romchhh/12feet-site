@@ -1,18 +1,44 @@
-import { isValidTime } from "@/lib/booking-rates";
+import { isValidDateISO } from "@/lib/booking-rates";
 
-/** Half-hour slots from 12:00 to 23:30 inclusive. */
-export function buildTimeSlots(): string[] {
+export type DayHours = {
+  openMin: number;
+  closeMin: number;
+};
+
+function pad(n: number) {
+  return String(n).padStart(2, "0");
+}
+
+export function minutesToTime(total: number): string {
+  const h = Math.floor(total / 60) % 24;
+  const m = total % 60;
+  return `${pad(h)}:${pad(m)}`;
+}
+
+export function timeToMinutes(time: string): number {
+  const [h, m] = time.split(":").map(Number);
+  return h * 60 + m;
+}
+
+/** Club hours by weekday: Mon–Thu 12–22, Fri–Sat 12–00, Sun 14–22. */
+export function getDayHours(dateIso: string): DayHours {
+  const [y, m, d] = dateIso.split("-").map(Number);
+  const day = new Date(y, m - 1, d).getDay(); // 0 Sun … 6 Sat
+  if (day === 0) return { openMin: 14 * 60, closeMin: 22 * 60 };
+  if (day === 5 || day === 6) return { openMin: 12 * 60, closeMin: 24 * 60 };
+  return { openMin: 12 * 60, closeMin: 22 * 60 };
+}
+
+/** Half-hour start slots that open on this date (before closing). */
+export function buildTimeSlotsForDate(dateIso: string): string[] {
+  if (!isValidDateISO(dateIso)) return [];
+  const { openMin, closeMin } = getDayHours(dateIso);
   const slots: string[] = [];
-  for (let h = 12; h <= 23; h += 1) {
-    for (const m of [0, 30]) {
-      if (h === 23 && m > 30) continue;
-      slots.push(`${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`);
-    }
+  for (let t = openMin; t < closeMin; t += 30) {
+    slots.push(minutesToTime(t));
   }
   return slots;
 }
-
-export const BOOKING_TIME_SLOTS = buildTimeSlots();
 
 export function toISODate(d: Date): string {
   const y = d.getFullYear();
@@ -36,10 +62,27 @@ export function isPastDate(iso: string, today = startOfDay(new Date())): boolean
   return parseISODate(iso) < today;
 }
 
-/** Last start time that still fits `hours` before closing (24:00 soft end from 23:30 last start for 0.5h — we allow until end exceeds midnight lightly). Club lasts until ~00/02; slots end when start+hours would go past 24:00 for simplicity. */
-export function slotFitsHours(time: string, hours: number): boolean {
-  if (!isValidTime(time)) return false;
-  const [h, m] = time.split(":").map(Number);
-  const end = h * 60 + m + hours * 60;
-  return end <= 24 * 60;
+/** Start time still fits `hours` before that day's closing. */
+export function slotFitsHours(
+  time: string,
+  hours: number,
+  dateIso: string,
+): boolean {
+  if (!/^\d{2}:\d{2}$/.test(time)) return false;
+  if (!Number.isInteger(hours) || hours < 1) return false;
+  const { closeMin } = getDayHours(dateIso);
+  return timeToMinutes(time) + hours * 60 <= closeMin;
+}
+
+export function isValidBookingSlot(
+  dateIso: string,
+  time: string,
+  hours: number,
+): boolean {
+  if (!isValidDateISO(dateIso)) return false;
+  if (!Number.isInteger(hours) || hours < 1 || hours > 6) return false;
+  return (
+    buildTimeSlotsForDate(dateIso).includes(time) &&
+    slotFitsHours(time, hours, dateIso)
+  );
 }

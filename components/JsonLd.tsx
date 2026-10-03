@@ -23,15 +23,21 @@ export default function JsonLd({ dict, locale }: Props) {
     openingHoursSpecification: [
       {
         "@type": "OpeningHoursSpecification",
-        dayOfWeek: ["Tuesday", "Wednesday", "Thursday"],
+        dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday"],
+        opens: "12:00",
+        closes: "22:00",
+      },
+      {
+        "@type": "OpeningHoursSpecification",
+        dayOfWeek: ["Friday", "Saturday"],
         opens: "12:00",
         closes: "00:00",
       },
       {
         "@type": "OpeningHoursSpecification",
-        dayOfWeek: ["Friday", "Saturday", "Sunday"],
-        opens: "12:00",
-        closes: "02:00",
+        dayOfWeek: ["Sunday"],
+        opens: "14:00",
+        closes: "22:00",
       },
     ],
     priceRange: "€€",

@@ -1,8 +1,6 @@
-import {
-  getBookingRate,
-  isValidDateISO,
-  isValidTime,
-} from "@/lib/booking-rates";
+import { getBookingRate, isValidDateISO } from "@/lib/booking-rates";
+import { isValidBookingSlot } from "@/lib/booking-slots";
+import { parseTableNumber } from "@/lib/booking-tables";
 import { findBookingConflict } from "@/lib/cms/bookings";
 import { locales, type Locale } from "@/lib/i18n/config";
 import {
@@ -51,20 +49,21 @@ export async function POST(request: Request) {
   const time = trimField(body.time, 5);
   const name = trimField(body.name, 120);
   const phone = trimField(body.phone, 40);
-  const tableNumber = body.tableNumber;
+  const tableNumber = parseTableNumber(body.tableNumber);
   const hours = body.hours;
 
   if (!isValidDateISO(date)) {
     return NextResponse.json({ error: "invalid_date" }, { status: 400 });
   }
-  if (!isValidTime(time)) {
-    return NextResponse.json({ error: "invalid_time" }, { status: 400 });
+  if (
+    typeof hours !== "number" ||
+    !Number.isInteger(hours) ||
+    !isValidBookingSlot(date, time, hours)
+  ) {
+    return NextResponse.json({ error: "invalid_slot" }, { status: 400 });
   }
-  if (tableNumber !== 1 && tableNumber !== 2) {
+  if (!tableNumber) {
     return NextResponse.json({ error: "invalid_table" }, { status: 400 });
-  }
-  if (typeof hours !== "number" || !Number.isInteger(hours) || hours < 1 || hours > 6) {
-    return NextResponse.json({ error: "invalid_hours" }, { status: 400 });
   }
   if (name.length < 2) {
     return NextResponse.json({ error: "invalid_name" }, { status: 400 });

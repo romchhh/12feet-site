@@ -169,7 +169,11 @@ export default function LeadsView() {
                     <td>{formatDateTime(row.createdAt)}</td>
                     <td>{row.date}</td>
                     <td>{row.time}</td>
-                    <td>{row.tableNumber}</td>
+                    <td>
+                      {row.tableNumber === 3
+                        ? "3 · праздники"
+                        : row.tableNumber}
+                    </td>
                     <td>{row.name}</td>
                     <td>{row.phone}</td>
                     <td>{formatMoney(row.total)}</td>

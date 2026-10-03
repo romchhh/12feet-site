@@ -1,3 +1,4 @@
+import type { TableNumber } from "@/lib/booking-tables";
 import type { Booking } from "@/lib/cms/store";
 
 /** Minutes from midnight for HH:MM */
@@ -27,7 +28,7 @@ export function findBookingConflict(
     date: string;
     time: string;
     hours: number;
-    tableNumber: 1 | 2;
+    tableNumber: TableNumber;
     excludeId?: string;
   },
 ): Booking | null {
@@ -55,7 +56,7 @@ export function isSlotAvailable(
     date: string;
     time: string;
     hours: number;
-    tableNumber: 1 | 2;
+    tableNumber: TableNumber;
     excludeId?: string;
   },
 ) {

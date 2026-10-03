@@ -14,7 +14,7 @@ export default function Menu({ dict, menuColumns }: Props) {
     <section className="block" id="menu">
       <div className="wrap">
         <SectionHead kicker={t.titleSans} title={t.titleSerif} lead={t.lead} />
-        <div className="card-grid cols-3">
+        <div className="card-grid cols-2">
           {columns.map((col) => (
             <article className="ui-card menu-card" key={col.heading}>
               <h3 className="card-title menu-card-title">{col.heading}</h3>

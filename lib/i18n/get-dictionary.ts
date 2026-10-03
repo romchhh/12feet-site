@@ -5,7 +5,7 @@ import { sitePhoneDisplay } from "@/lib/site";
 
 const shared = {
   address: "Záhradnícka 36, Bratislava",
-  hoursShort: "Tue–Thu 12:00–00:00 · Fri–Sun 12:00–02:00",
+  hoursShort: "Mon–Thu 12:00–22:00 · Fri–Sat 12:00–00:00 · Sun 14:00–22:00",
   phone: sitePhoneDisplay,
 };
 
@@ -44,8 +44,8 @@ const dictionaries: Record<Locale, DictionaryBase> = {
       addressTitle: "Záhradnícka 36",
       addressText: "Bratislava",
       hoursKicker: "Otváracie hodiny",
-      hoursTitle: "12:00 – 00:00",
-      hoursText: "Ut – Št do polnoci · Pi – Ne do 02:00",
+      hoursTitle: "Po – Ne",
+      hoursText: "Po–Št 12:00–22:00 · Pi–So 12:00–00:00 · Ne 14:00–22:00",
       bookKicker: "Rezervácia",
       bookTitle: "Cez web",
       bookLink: "Rezervovať stôl →",
@@ -69,7 +69,7 @@ const dictionaries: Record<Locale, DictionaryBase> = {
         },
         {
           title: "Rezervácia online",
-          text: "Dátum, čas a stôl 1 alebo 2 — cena sa počíta automaticky.",
+          text: "Dátum, čas a stôl 1, 2 alebo oslavy — cena sa počíta automaticky.",
         },
       ],
     },
@@ -96,11 +96,11 @@ const dictionaries: Record<Locale, DictionaryBase> = {
       steps: [
         {
           title: "Vyberte moment",
-          text: "Od 12:00. Do polnoci vo všedné dni, do 02:00 cez víkend.",
+          text: "Po–Št 12:00–22:00 · Pi–So 12:00–00:00 · Ne 14:00–22:00.",
         },
         {
           title: "Zvoľte stôl",
-          text: "Dva 12 ft stoly, 1–6 hodín. 20 € Po–Št · 25 € Pi–Ne.",
+          text: "Stôl 1, stôl 2 alebo oslavy (20 miest). 20 € Po–Št · 25 € Pi–Ne.",
         },
         {
           title: "Pošlite a hrajte",
@@ -114,7 +114,7 @@ const dictionaries: Record<Locale, DictionaryBase> = {
       items: [
         {
           q: "Koľko stolov máte?",
-          a: "Dva plné 12 ft stoly — dve partie naraz, alebo celý zál pre partiu priateľov.",
+          a: "Dva 12 ft biliardové stoly a 3 bežné stoly na oslavy (do 20 hostí).",
         },
         {
           q: "Koľko stojí hodina?",
@@ -137,8 +137,8 @@ const dictionaries: Record<Locale, DictionaryBase> = {
       bullets: [
         shared.address,
         shared.phone,
-        "Ut – Št 12:00 – 00:00",
-        "Pi – Ne 12:00 – 02:00",
+        "Po – Št 12:00 – 22:00",
+        "Pi – So 12:00 – 00:00 · Ne 14:00 – 22:00",
         "Rezervácia cez formulár na tejto stránke",
       ],
       mapLabel: "Otvoriť v Mapách",
@@ -146,7 +146,7 @@ const dictionaries: Record<Locale, DictionaryBase> = {
     book: {
       titleSans: "rezervujte",
       titleSerif: "stôl",
-      lead: "20 €/hod všedný deň, 25 €/hod piatok – nedeľa. Dva stoly na výber.",
+      lead: "20 €/hod všedný deň, 25 €/hod piatok – nedeľa. Stôl 1, stôl 2 alebo oslavy.",
       date: "Dátum",
       time: "Čas",
       table: "Stôl",
@@ -160,6 +160,8 @@ const dictionaries: Record<Locale, DictionaryBase> = {
       submit: "Rezervovať",
       table1: "Stôl 1",
       table2: "Stôl 2",
+      table3: "Oslavy / party",
+      table3Hint: "3 stoly · do 20 hostí",
       perHour: "€/hod",
       hourUnit: "hod",
       hoursUnit: "hod",
@@ -176,6 +178,7 @@ const dictionaries: Record<Locale, DictionaryBase> = {
       loadingSlots: "Načítavam termíny…",
       pickDate: "Vyberte dátum",
       pickTime: "Vyberte čas",
+      pickTable: "Vyberte stôl",
       weekdayShort: "Po – Št",
       weekendShort: "Pi – Ne",
       continue: "Ďalej",
@@ -187,13 +190,11 @@ const dictionaries: Record<Locale, DictionaryBase> = {
       successTitle: "Rezervácia odoslaná",
       successText: "Ďakujeme! Potvrdíme rezerváciu čoskoro.",
       successOk: "Hotovo",
-      autoTable: "Stôl priradíme automaticky",
-      tablesFree: "{n} voľné",
     },
     footer: {
       logo: "12 FEET",
       address: shared.address,
-      hours: "Ut – Št 12:00 – 00:00 · Pi – Ne 12:00 – 02:00",
+      hours: "Po–Št 12:00–22:00 · Pi–So 12:00–00:00 · Ne 14:00–22:00",
       book: "Rezervovať stôl",
       tag: "Billiard club & Gentlemen's lounge",
     },
@@ -238,8 +239,8 @@ const dictionaries: Record<Locale, DictionaryBase> = {
       addressTitle: "Záhradnícka 36",
       addressText: "Bratislava",
       hoursKicker: "Opening hours",
-      hoursTitle: "12:00 – 00:00",
-      hoursText: "Tue – Thu until midnight · Fri – Sun until 02:00",
+      hoursTitle: "Mon – Sun",
+      hoursText: "Mon–Thu 12:00–22:00 · Fri–Sat 12:00–00:00 · Sun 14:00–22:00",
       bookKicker: "Booking",
       bookTitle: "Online",
       bookLink: "Book a table →",
@@ -263,7 +264,7 @@ const dictionaries: Record<Locale, DictionaryBase> = {
         },
         {
           title: "Online booking",
-          text: "Pick date, time and table 1 or 2 — price updates instantly.",
+          text: "Pick date, time and table 1, 2 or party seating — price updates instantly.",
         },
       ],
     },
@@ -290,11 +291,11 @@ const dictionaries: Record<Locale, DictionaryBase> = {
       steps: [
         {
           title: "Pick your moment",
-          text: "From 12:00. Until midnight on weekdays, 02:00 on weekends.",
+          text: "Mon–Thu 12:00–22:00 · Fri–Sat 12:00–00:00 · Sun 14:00–22:00.",
         },
         {
           title: "Choose a table",
-          text: "Two 12 ft tables, 1–6 hours. €20 Mon–Thu · €25 Fri–Sun.",
+          text: "Table 1, table 2 or party (20 seats). €20 Mon–Thu · €25 Fri–Sun.",
         },
         {
           title: "Send & play",
@@ -308,7 +309,7 @@ const dictionaries: Record<Locale, DictionaryBase> = {
       items: [
         {
           q: "How many tables?",
-          a: "Two full 12 ft tables — two games at once, or the room for a group.",
+          a: "Two 12 ft billiard tables plus 3 regular tables for parties (up to 20 guests).",
         },
         {
           q: "What’s the hourly rate?",
@@ -331,8 +332,8 @@ const dictionaries: Record<Locale, DictionaryBase> = {
       bullets: [
         shared.address,
         shared.phone,
-        "Tue – Thu 12:00 – 00:00",
-        "Fri – Sun 12:00 – 02:00",
+        "Mon – Thu 12:00 – 22:00",
+        "Fri – Sat 12:00 – 00:00 · Sun 14:00 – 22:00",
         "Booking via the form on this page",
       ],
       mapLabel: "Open in Maps",
@@ -340,7 +341,7 @@ const dictionaries: Record<Locale, DictionaryBase> = {
     book: {
       titleSans: "book a",
       titleSerif: "table",
-      lead: "€20/h on weekdays, €25/h Fri–Sun. Two tables available.",
+      lead: "€20/h on weekdays, €25/h Fri–Sun. Table 1, table 2 or party seating.",
       date: "Date",
       time: "Time",
       table: "Table",
@@ -354,6 +355,8 @@ const dictionaries: Record<Locale, DictionaryBase> = {
       submit: "Book now",
       table1: "Table 1",
       table2: "Table 2",
+      table3: "Party / birthday",
+      table3Hint: "3 tables · up to 20 guests",
       perHour: "€/h",
       hourUnit: "hr",
       hoursUnit: "hrs",
@@ -369,6 +372,7 @@ const dictionaries: Record<Locale, DictionaryBase> = {
       loadingSlots: "Loading times…",
       pickDate: "Pick a date",
       pickTime: "Pick a time",
+      pickTable: "Pick a table",
       weekdayShort: "Mon – Thu",
       weekendShort: "Fri – Sun",
       continue: "Continue",
@@ -380,8 +384,6 @@ const dictionaries: Record<Locale, DictionaryBase> = {
       successTitle: "Booking sent",
       successText: "Thank you! We’ll confirm your reservation shortly.",
       successOk: "Done",
-      autoTable: "We’ll assign a free table",
-      tablesFree: "{n} free",
     },
     footer: {
       logo: "12 FEET",
@@ -431,8 +433,8 @@ const dictionaries: Record<Locale, DictionaryBase> = {
       addressTitle: "Záhradnícka 36",
       addressText: "Bratislava",
       hoursKicker: "Часы работы",
-      hoursTitle: "12:00 – 00:00",
-      hoursText: "Вт – Чт до полуночи · Пт – Вс до 02:00",
+      hoursTitle: "Пн – Вс",
+      hoursText: "Пн–Чт 12:00–22:00 · Пт–Сб 12:00–00:00 · Вс 14:00–22:00",
       bookKicker: "Бронь",
       bookTitle: "На сайте",
       bookLink: "Забронировать стол →",
@@ -456,7 +458,7 @@ const dictionaries: Record<Locale, DictionaryBase> = {
         },
         {
           title: "Бронь онлайн",
-          text: "Дата, время, стол 1 или 2 — цена считается сразу.",
+          text: "Дата, время, стол 1, 2 или обычные столы для праздников — цена сразу.",
         },
       ],
     },
@@ -483,11 +485,11 @@ const dictionaries: Record<Locale, DictionaryBase> = {
       steps: [
         {
           title: "Выберите момент",
-          text: "С 12:00. До полуночи в будни, до 02:00 в выходные.",
+          text: "Пн–Чт 12:00–22:00 · Пт–Сб 12:00–00:00 · Вс 14:00–22:00.",
         },
         {
           title: "Выберите стол",
-          text: "Два стола 12 ft, 1–6 часов. 20 € Пн–Чт · 25 € Пт–Вс.",
+          text: "Стол 1, стол 2 или праздники (20 мест). 20 € Пн–Чт · 25 € Пт–Вс.",
         },
         {
           title: "Отправьте и играйте",
@@ -501,7 +503,7 @@ const dictionaries: Record<Locale, DictionaryBase> = {
       items: [
         {
           q: "Сколько столов?",
-          a: "Два полных стола 12 ft — две партии сразу или зал для компании.",
+          a: "Два бильярдных стола 12 ft и 3 обычных стола для дней рождения и вечеринок (до 20 гостей).",
         },
         {
           q: "Сколько стоит час?",
@@ -524,8 +526,8 @@ const dictionaries: Record<Locale, DictionaryBase> = {
       bullets: [
         shared.address,
         shared.phone,
-        "Вт – Чт 12:00 – 00:00",
-        "Пт – Вс 12:00 – 02:00",
+        "Пн – Чт 12:00 – 22:00",
+        "Пт – Сб 12:00 – 00:00 · Вс 14:00 – 22:00",
         "Бронь через форму на этой странице",
       ],
       mapLabel: "Открыть в картах",
@@ -533,7 +535,7 @@ const dictionaries: Record<Locale, DictionaryBase> = {
     book: {
       titleSans: "забронируйте",
       titleSerif: "стол",
-      lead: "20 €/час в будни, 25 €/час с пятницы по воскресенье.",
+      lead: "20 €/час в будни, 25 €/час Пт–Вс. Стол 1, стол 2 или праздники.",
       date: "Дата",
       time: "Время",
       table: "Стол",
@@ -547,6 +549,8 @@ const dictionaries: Record<Locale, DictionaryBase> = {
       submit: "Забронировать",
       table1: "Стол 1",
       table2: "Стол 2",
+      table3: "День рождения / вечеринка",
+      table3Hint: "3 стола · до 20 гостей",
       perHour: "€/час",
       hourUnit: "час",
       hoursUnit: "часа",
@@ -563,6 +567,7 @@ const dictionaries: Record<Locale, DictionaryBase> = {
       loadingSlots: "Загрузка слотов…",
       pickDate: "Выберите дату",
       pickTime: "Выберите время",
+      pickTable: "Выберите стол",
       weekdayShort: "Пн – Чт",
       weekendShort: "Пт – Вс",
       continue: "Далее",
@@ -574,13 +579,11 @@ const dictionaries: Record<Locale, DictionaryBase> = {
       successTitle: "Бронь отправлена",
       successText: "Спасибо! Мы скоро подтвердим вашу резервацию.",
       successOk: "Готово",
-      autoTable: "Стол подберём автоматически",
-      tablesFree: "{n} свободно",
     },
     footer: {
       logo: "12 FEET",
       address: shared.address,
-      hours: "Вт – Чт 12:00 – 00:00 · Пт – Вс 12:00 – 02:00",
+      hours: "Пн–Чт 12:00–22:00 · Пт–Сб 12:00–00:00 · Вс 14:00–22:00",
       book: "Забронировать стол",
       tag: "Billiard club & Gentlemen's lounge",
     },
@@ -625,8 +628,8 @@ const dictionaries: Record<Locale, DictionaryBase> = {
       addressTitle: "Záhradnícka 36",
       addressText: "Bratislava",
       hoursKicker: "Години роботи",
-      hoursTitle: "12:00 – 00:00",
-      hoursText: "Вт – Чт до опівночі · Пт – Нд до 02:00",
+      hoursTitle: "Пн – Нд",
+      hoursText: "Пн–Чт 12:00–22:00 · Пт–Сб 12:00–00:00 · Нд 14:00–22:00",
       bookKicker: "Бронь",
       bookTitle: "На сайті",
       bookLink: "Забронювати стіл →",
@@ -650,7 +653,7 @@ const dictionaries: Record<Locale, DictionaryBase> = {
         },
         {
           title: "Бронь онлайн",
-          text: "Дата, час, стіл 1 або 2 — ціна одразу в формі.",
+          text: "Дата, час, стіл 1, 2 або звичайні столи для свят — ціна одразу.",
         },
       ],
     },
@@ -677,11 +680,11 @@ const dictionaries: Record<Locale, DictionaryBase> = {
       steps: [
         {
           title: "Оберіть момент",
-          text: "З 12:00. До опівночі в будні, до 02:00 на вихідних.",
+          text: "Пн–Чт 12:00–22:00 · Пт–Сб 12:00–00:00 · Нд 14:00–22:00.",
         },
         {
           title: "Оберіть стіл",
-          text: "Два столи 12 ft, 1–6 годин. 20 € Пн–Чт · 25 € Пт–Нд.",
+          text: "Стіл 1, стіл 2 або свята (20 місць). 20 € Пн–Чт · 25 € Пт–Нд.",
         },
         {
           title: "Надішліть і грайте",
@@ -695,7 +698,7 @@ const dictionaries: Record<Locale, DictionaryBase> = {
       items: [
         {
           q: "Скільки столів?",
-          a: "Два повні столи 12 ft — дві партії одразу або зал для компанії.",
+          a: "Два більярдні столи 12 ft і 3 звичайні столи для днів народження та вечірок (до 20 гостей).",
         },
         {
           q: "Скільки коштує година?",
@@ -718,8 +721,8 @@ const dictionaries: Record<Locale, DictionaryBase> = {
       bullets: [
         shared.address,
         shared.phone,
-        "Вт – Чт 12:00 – 00:00",
-        "Пт – Нд 12:00 – 02:00",
+        "Пн – Чт 12:00 – 22:00",
+        "Пт – Сб 12:00 – 00:00 · Нд 14:00 – 22:00",
         "Бронь через форму на цій сторінці",
       ],
       mapLabel: "Відкрити в картах",
@@ -727,7 +730,7 @@ const dictionaries: Record<Locale, DictionaryBase> = {
     book: {
       titleSans: "забронюйте",
       titleSerif: "стіл",
-      lead: "20 €/год у будні, 25 €/год п'ятниця – неділя.",
+      lead: "20 €/год у будні, 25 €/год Пт–Нд. Стіл 1, стіл 2 або свята.",
       date: "Дата",
       time: "Час",
       table: "Стіл",
@@ -741,6 +744,8 @@ const dictionaries: Record<Locale, DictionaryBase> = {
       submit: "Забронювати",
       table1: "Стіл 1",
       table2: "Стіл 2",
+      table3: "День народження / вечірка",
+      table3Hint: "3 столи · до 20 гостей",
       perHour: "€/год",
       hourUnit: "год",
       hoursUnit: "год",
@@ -757,6 +762,7 @@ const dictionaries: Record<Locale, DictionaryBase> = {
       loadingSlots: "Завантаження слотів…",
       pickDate: "Оберіть дату",
       pickTime: "Оберіть час",
+      pickTable: "Оберіть стіл",
       weekdayShort: "Пн – Чт",
       weekendShort: "Пт – Нд",
       continue: "Далі",
@@ -768,13 +774,11 @@ const dictionaries: Record<Locale, DictionaryBase> = {
       successTitle: "Бронь надіслано",
       successText: "Дякуємо! Незабаром підтвердимо вашу резервацію.",
       successOk: "Готово",
-      autoTable: "Стіл підберемо автоматично",
-      tablesFree: "{n} вільно",
     },
     footer: {
       logo: "12 FEET",
       address: shared.address,
-      hours: "Вт – Чт 12:00 – 00:00 · Пт – Нд 12:00 – 02:00",
+      hours: "Пн–Чт 12:00–22:00 · Пт–Сб 12:00–00:00 · Нд 14:00–22:00",
       book: "Забронювати стіл",
       tag: "Billiard club & Gentlemen's lounge",
     },
@@ -819,8 +823,8 @@ const dictionaries: Record<Locale, DictionaryBase> = {
       addressTitle: "Záhradnícka 36",
       addressText: "Bratislava",
       hoursKicker: "Öffnungszeiten",
-      hoursTitle: "12:00 – 00:00",
-      hoursText: "Di – Do bis Mitternacht · Fr – So bis 02:00",
+      hoursTitle: "Mo – So",
+      hoursText: "Mo–Do 12:00–22:00 · Fr–Sa 12:00–00:00 · So 14:00–22:00",
       bookKicker: "Reservierung",
       bookTitle: "Online",
       bookLink: "Tisch reservieren →",
@@ -844,7 +848,7 @@ const dictionaries: Record<Locale, DictionaryBase> = {
         },
         {
           title: "Online-Buchung",
-          text: "Datum, Uhrzeit, Tisch 1 oder 2 — Preis sofort sichtbar.",
+          text: "Datum, Uhrzeit, Tisch 1, 2 oder Party — Preis sofort sichtbar.",
         },
       ],
     },
@@ -871,11 +875,11 @@ const dictionaries: Record<Locale, DictionaryBase> = {
       steps: [
         {
           title: "Moment wählen",
-          text: "Ab 12:00. Bis Mitternacht unter der Woche, bis 02:00 am Wochenende.",
+          text: "Mo–Do 12:00–22:00 · Fr–Sa 12:00–00:00 · So 14:00–22:00.",
         },
         {
           title: "Tisch wählen",
-          text: "Zwei 12-Fuß-Tische, 1–6 Stunden. 20 € Mo–Do · 25 € Fr–So.",
+          text: "Tisch 1, Tisch 2 oder Party (20 Plätze). 20 € Mo–Do · 25 € Fr–So.",
         },
         {
           title: "Senden & spielen",
@@ -889,7 +893,7 @@ const dictionaries: Record<Locale, DictionaryBase> = {
       items: [
         {
           q: "Wie viele Tische?",
-          a: "Zwei volle 12-Fuß-Tische — zwei Partien parallel oder der Raum für die Gruppe.",
+          a: "Zwei 12-Fuß-Billardtische plus 3 normale Tische für Feiern (bis 20 Gäste).",
         },
         {
           q: "Was kostet die Stunde?",
@@ -912,8 +916,8 @@ const dictionaries: Record<Locale, DictionaryBase> = {
       bullets: [
         shared.address,
         shared.phone,
-        "Di – Do 12:00 – 00:00",
-        "Fr – So 12:00 – 02:00",
+        "Mo – Do 12:00 – 22:00",
+        "Fr – Sa 12:00 – 00:00 · So 14:00 – 22:00",
         "Reservierung über das Formular",
       ],
       mapLabel: "In Karten öffnen",
@@ -921,7 +925,7 @@ const dictionaries: Record<Locale, DictionaryBase> = {
     book: {
       titleSans: "tisch",
       titleSerif: "reservieren",
-      lead: "20 €/h werktags, 25 €/h Fr–So.",
+      lead: "20 €/h werktags, 25 €/h Fr–So. Tisch 1, Tisch 2 oder Party.",
       date: "Datum",
       time: "Uhrzeit",
       table: "Tisch",
@@ -935,6 +939,8 @@ const dictionaries: Record<Locale, DictionaryBase> = {
       submit: "Reservieren",
       table1: "Tisch 1",
       table2: "Tisch 2",
+      table3: "Party / Geburtstag",
+      table3Hint: "3 Tische · bis 20 Gäste",
       perHour: "€/Std.",
       hourUnit: "Std.",
       hoursUnit: "Std.",
@@ -951,6 +957,7 @@ const dictionaries: Record<Locale, DictionaryBase> = {
       loadingSlots: "Zeiten werden geladen…",
       pickDate: "Datum wählen",
       pickTime: "Uhrzeit wählen",
+      pickTable: "Tisch wählen",
       weekdayShort: "Mo – Do",
       weekendShort: "Fr – So",
       continue: "Weiter",
@@ -962,8 +969,6 @@ const dictionaries: Record<Locale, DictionaryBase> = {
       successTitle: "Reservierung gesendet",
       successText: "Danke! Wir bestätigen Ihre Reservierung in Kürze.",
       successOk: "Fertig",
-      autoTable: "Tisch wird automatisch zugewiesen",
-      tablesFree: "{n} frei",
     },
     footer: {
       logo: "12 FEET",
@@ -985,7 +990,7 @@ const tablesExtras: Record<
   Pick<Dictionary["tables"], "note" | "specs">
 > = {
   sk: {
-    note: "Oba stoly sú nezávislé — môžete hrať dve partie naraz alebo si zarezervovať celý zál pre skupinu.",
+    note: "Biliardové stoly sú nezávislé — alebo si zarezervujte bežné stoly na oslavu (do 20 hostí).",
     specs: [
       {
         title: "12 ft pyramída",
@@ -993,16 +998,16 @@ const tablesExtras: Record<
       },
       {
         title: "Stôl 1 & 2",
-        text: "Dva samostatné stoly v jednom zál — rezervujete konkrétny stôl online.",
+        text: "Dva samostatné biliardové stoly — rezervujete konkrétny stôl online.",
       },
       {
-        title: "Bar pri hre",
-        text: "Káva, čaj a pivo objednáte pri stole — bez prerušenia partie.",
+        title: "Oslavy",
+        text: "3 bežné stoly na narodeniny a party — až 20 hostí.",
       },
     ],
   },
   en: {
-    note: "Both tables are independent — two games at once or book the room for a group.",
+    note: "Billiard tables are independent — or book regular tables for a party (up to 20 guests).",
     specs: [
       {
         title: "12 ft pyramid",
@@ -1010,16 +1015,16 @@ const tablesExtras: Record<
       },
       {
         title: "Table 1 & 2",
-        text: "Two separate tables in one room — pick your table when booking online.",
+        text: "Two separate billiard tables — pick your table when booking online.",
       },
       {
-        title: "Bar at the table",
-        text: "Coffee, tea and beer served while you play.",
+        title: "Parties",
+        text: "3 regular tables for birthdays and parties — up to 20 guests.",
       },
     ],
   },
   ru: {
-    note: "Два независимых стола — две партии одновременно или зал для компании.",
+    note: "Бильярдные столы независимы — или забронируйте обычные столы на праздник (до 20 гостей).",
     specs: [
       {
         title: "12 ft пирамида",
@@ -1027,16 +1032,16 @@ const tablesExtras: Record<
       },
       {
         title: "Стол 1 и 2",
-        text: "Два отдельных стола в зале — выбираете при бронировании.",
+        text: "Два отдельных бильярдных стола — выбираете при бронировании.",
       },
       {
-        title: "Бар у стола",
-        text: "Кофе, чай и пиво — заказ у стола без перерыва в игре.",
+        title: "Праздники",
+        text: "3 обычных стола для дней рождения и вечеринок — до 20 гостей.",
       },
     ],
   },
   uk: {
-    note: "Два незалежні столи — дві партії одночасно або зал для компанії.",
+    note: "Більярдні столи незалежні — або забронюйте звичайні столи на свято (до 20 гостей).",
     specs: [
       {
         title: "12 ft піраміда",
@@ -1044,16 +1049,16 @@ const tablesExtras: Record<
       },
       {
         title: "Стіл 1 і 2",
-        text: "Два окремі столи в залі — обираєте при бронюванні.",
+        text: "Два окремі більярдні столи — обираєте при бронюванні.",
       },
       {
-        title: "Бар біля столу",
-        text: "Кава, чай і пиво — замовлення без перерви в грі.",
+        title: "Свята",
+        text: "3 звичайні столи для днів народження та вечірок — до 20 гостей.",
       },
     ],
   },
   de: {
-    note: "Zwei unabhängige Tische — zwei Partien gleichzeitig oder den Raum für Gruppen.",
+    note: "Billardtische unabhängig — oder normale Tische für Feiern reservieren (bis 20 Gäste).",
     specs: [
       {
         title: "12 ft Pyramide",
@@ -1061,11 +1066,11 @@ const tablesExtras: Record<
       },
       {
         title: "Tisch 1 & 2",
-        text: "Zwei getrennte Tische — Wahl bei der Online-Reservierung.",
+        text: "Zwei getrennte Billardtische — Wahl bei der Online-Reservierung.",
       },
       {
-        title: "Bar am Tisch",
-        text: "Kaffee, Tee und Bier — Bestellung während des Spiels.",
+        title: "Feiern",
+        text: "3 normale Tische für Geburtstage und Partys — bis 20 Gäste.",
       },
     ],
   },

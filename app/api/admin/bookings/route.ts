@@ -1,5 +1,8 @@
 export const runtime = "nodejs";
 
+import { getBookingRate, isValidDateISO, isValidTime } from "@/lib/booking-rates";
+import { isValidBookingSlot } from "@/lib/booking-slots";
+import { parseTableNumber } from "@/lib/booking-tables";
 import { findBookingConflict } from "@/lib/cms/bookings";
 import { requireAdmin } from "@/lib/cms/session";
 import {
@@ -9,7 +12,6 @@ import {
   type Booking,
   type BookingStatus,
 } from "@/lib/cms/store";
-import { getBookingRate, isValidDateISO, isValidTime } from "@/lib/booking-rates";
 import { NextResponse } from "next/server";
 
 const STATUSES: BookingStatus[] = [
@@ -19,11 +21,6 @@ const STATUSES: BookingStatus[] = [
   "completed",
   "blocked",
 ];
-
-function parseTable(value: unknown): 1 | 2 | null {
-  if (value === 1 || value === 2) return value;
-  return null;
-}
 
 export async function GET(request: Request) {
   const { error } = await requireAdmin();
@@ -64,7 +61,7 @@ export async function POST(request: Request) {
 
   const date = typeof body.date === "string" ? body.date.trim() : "";
   const time = typeof body.time === "string" ? body.time.trim() : "";
-  const tableNumber = parseTable(body.tableNumber);
+  const tableNumber = parseTableNumber(body.tableNumber);
   const hours =
     typeof body.hours === "number" && Number.isInteger(body.hours)
       ? body.hours
@@ -77,11 +74,8 @@ export async function POST(request: Request) {
       : "confirmed";
   const notes = typeof body.notes === "string" ? body.notes.trim().slice(0, 500) : "";
 
-  if (!isValidDateISO(date) || !isValidTime(time) || !tableNumber || !hours) {
+  if (!tableNumber || !hours || !isValidBookingSlot(date, time, hours)) {
     return NextResponse.json({ ok: false, error: "invalid_fields" }, { status: 400 });
-  }
-  if (hours < 1 || hours > 6) {
-    return NextResponse.json({ ok: false, error: "invalid_hours" }, { status: 400 });
   }
   if (status !== "blocked" && name.length < 2) {
     return NextResponse.json({ ok: false, error: "invalid_name" }, { status: 400 });
@@ -155,7 +149,7 @@ export async function PATCH(request: Request) {
     typeof body.time === "string" && isValidTime(body.time)
       ? body.time
       : existing.time;
-  const nextTable = parseTable(body.tableNumber) ?? existing.tableNumber;
+  const nextTable = parseTableNumber(body.tableNumber) ?? existing.tableNumber;
   const nextHours =
     typeof body.hours === "number" && Number.isInteger(body.hours)
       ? body.hours

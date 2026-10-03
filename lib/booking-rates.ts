@@ -20,8 +20,8 @@ export function isValidDateISO(dateStr: string): boolean {
 export function isValidTime(timeStr: string): boolean {
   if (!/^\d{2}:\d{2}$/.test(timeStr)) return false;
   const [h, min] = timeStr.split(":").map(Number);
-  if (h < 12 || h > 23) return false;
-  if (min < 0 || min > 59) return false;
-  if (h === 23 && min > 30) return false;
+  if (!Number.isFinite(h) || !Number.isFinite(min)) return false;
+  if (h < 0 || h > 23) return false;
+  if (min !== 0 && min !== 30) return false;
   return true;
 }

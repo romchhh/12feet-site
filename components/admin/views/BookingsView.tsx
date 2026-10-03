@@ -16,6 +16,9 @@ import {
   formatMoney,
 } from "@/components/admin/AdminUi";
 import styles from "@/components/admin/AdminUi.module.css";
+import { buildTimeSlotsForDate } from "@/lib/booking-slots";
+import type { TableNumber } from "@/lib/booking-tables";
+import { TABLE_NUMBERS } from "@/lib/booking-tables";
 import { bookingEndMinutes, timeToMinutes } from "@/lib/cms/bookings";
 import type { Booking, BookingStatus } from "@/lib/cms/store";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -29,22 +32,19 @@ function todayIso() {
   return `${y}-${m}-${day}`;
 }
 
-function buildTimeSlots(): string[] {
-  const slots: string[] = [];
-  for (let h = 12; h <= 23; h += 1) {
-    for (const m of [0, 30]) {
-      if (h === 23 && m > 30) continue;
-      slots.push(`${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`);
-    }
-  }
-  return slots;
+function tableTitle(n: TableNumber) {
+  if (n === 3) return "Обычные столы (праздники)";
+  return `Стол ${n}`;
 }
 
-const TIME_SLOTS = buildTimeSlots();
+function tableCell(n: TableNumber) {
+  if (n === 3) return "3 · праздники";
+  return String(n);
+}
 
 function slotLabel(booking: Booking) {
   const endMin = bookingEndMinutes(booking);
-  const endH = Math.floor(endMin / 60);
+  const endH = Math.floor(endMin / 60) % 24;
   const endM = endMin % 60;
   const end = `${String(endH).padStart(2, "0")}:${String(endM).padStart(2, "0")}`;
   return `${booking.time}–${end}`;
@@ -66,12 +66,20 @@ export default function BookingsView() {
   const [busyId, setBusyId] = useState<string | null>(null);
 
   const [time, setTime] = useState("18:00");
-  const [tableNumber, setTableNumber] = useState<1 | 2>(1);
+  const [tableNumber, setTableNumber] = useState<TableNumber>(1);
   const [hours, setHours] = useState(2);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [status, setStatus] = useState<BookingStatus>("confirmed");
   const [blockMode, setBlockMode] = useState(false);
+
+  const timeSlots = useMemo(() => buildTimeSlotsForDate(date), [date]);
+
+  useEffect(() => {
+    if (timeSlots.length && !timeSlots.includes(time)) {
+      setTime(timeSlots[0]);
+    }
+  }, [timeSlots, time]);
 
   useEffect(() => {
     if (dateFromUrl && /^\d{4}-\d{2}-\d{2}$/.test(dateFromUrl) && dateFromUrl !== date) {
@@ -115,13 +123,16 @@ export default function BookingsView() {
   );
 
   const byTable = useMemo(() => {
-    return {
-      1: bookings.filter((b) => b.tableNumber === 1),
-      2: bookings.filter((b) => b.tableNumber === 2),
-    };
+    const map = { 1: [], 2: [], 3: [] } as Record<TableNumber, Booking[]>;
+    for (const b of bookings) {
+      if (b.tableNumber === 1 || b.tableNumber === 2 || b.tableNumber === 3) {
+        map[b.tableNumber].push(b);
+      }
+    }
+    return map;
   }, [bookings]);
 
-  function isSlotTaken(table: 1 | 2, slotTime: string) {
+  function isSlotTaken(table: TableNumber, slotTime: string) {
     const start = timeToMinutes(slotTime);
     for (const booking of byTable[table]) {
       if (!["new", "confirmed", "blocked"].includes(booking.status)) continue;
@@ -187,10 +198,10 @@ export default function BookingsView() {
     await load(date);
   }
 
-  function renderSlotGrid(table: 1 | 2) {
+  function renderSlotGrid(table: TableNumber) {
     return (
       <div className={styles.grid2}>
-        {TIME_SLOTS.map((slot) => {
+        {timeSlots.map((slot) => {
           const taken = isSlotTaken(table, slot);
           return (
             <div
@@ -230,12 +241,11 @@ export default function BookingsView() {
         <AdminLoading />
       ) : (
         <div className={styles.grid2} style={{ marginTop: 18 }}>
-          <AdminCard title="Стол 1">
-            {renderSlotGrid(1)}
-          </AdminCard>
-          <AdminCard title="Стол 2">
-            {renderSlotGrid(2)}
-          </AdminCard>
+          {TABLE_NUMBERS.map((n) => (
+            <AdminCard key={n} title={tableTitle(n)}>
+              {renderSlotGrid(n)}
+            </AdminCard>
+          ))}
         </div>
       )}
 
@@ -262,7 +272,7 @@ export default function BookingsView() {
                   {pendingBookings.map((row) => (
                     <tr key={row.id}>
                       <td>{slotLabel(row)}</td>
-                      <td>{row.tableNumber}</td>
+                      <td>{tableCell(row.tableNumber)}</td>
                       <td>{row.name}</td>
                       <td>{row.phone}</td>
                       <td>{row.hours}</td>
@@ -313,7 +323,7 @@ export default function BookingsView() {
                   {calendarBookings.map((row) => (
                     <tr key={row.id}>
                       <td>{slotLabel(row)}</td>
-                      <td>{row.tableNumber}</td>
+                      <td>{tableCell(row.tableNumber)}</td>
                       <td>{row.name}</td>
                       <td>{row.hours}</td>
                       <td>{formatMoney(row.total)}</td>
@@ -336,23 +346,24 @@ export default function BookingsView() {
         <AdminCard title="Новая запись">
           <div className={styles.formGrid}>
             <AdminField label="Время">
-              <input
-                type="time"
-                value={time}
-                min="12:00"
-                max="23:30"
-                onChange={(e) => setTime(e.target.value)}
-              />
+              <select value={time} onChange={(e) => setTime(e.target.value)}>
+                {timeSlots.map((slot) => (
+                  <option key={slot} value={slot}>
+                    {slot}
+                  </option>
+                ))}
+              </select>
             </AdminField>
             <AdminField label="Стол">
               <select
                 value={tableNumber}
                 onChange={(e) =>
-                  setTableNumber(Number(e.target.value) as 1 | 2)
+                  setTableNumber(Number(e.target.value) as TableNumber)
                 }
               >
                 <option value={1}>Стол 1</option>
                 <option value={2}>Стол 2</option>
+                <option value={3}>Обычные столы (праздники)</option>
               </select>
             </AdminField>
             <AdminField label="Часы">

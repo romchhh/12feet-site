@@ -30,11 +30,16 @@ export async function sendTelegramMessage(text: string): Promise<void> {
   }
 }
 
+function tableLabel(tableNumber: 1 | 2 | 3): string {
+  if (tableNumber === 3) return "3 · oslavy / party (20 miest)";
+  return String(tableNumber);
+}
+
 export function formatBookingTelegramMessage(input: {
   locale: string;
   date: string;
   time: string;
-  tableNumber: 1 | 2;
+  tableNumber: 1 | 2 | 3;
   hours: number;
   name: string;
   phone: string;
@@ -45,7 +50,7 @@ export function formatBookingTelegramMessage(input: {
     "<b>🎱 Нова rezervácia · 12 FEET</b>",
     "",
     `<b>Dátum:</b> ${escapeHtml(input.date)} · ${escapeHtml(input.time)}`,
-    `<b>Stôl:</b> ${input.tableNumber}`,
+    `<b>Stôl:</b> ${escapeHtml(tableLabel(input.tableNumber))}`,
     `<b>Hodín:</b> ${input.hours}`,
     `<b>Sadzba:</b> ${input.rate} €/hod`,
     `<b>Spolu:</b> ${input.total} €`,
